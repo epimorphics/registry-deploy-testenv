@@ -1,0 +1,12 @@
+#set($pageTitle="Registry error")
+  #if($uri.isEmpty())
+    #set($nav="root")
+  #end
+
+#parse("structure/_preamble.vm")
+
+        <h2>Sorry</h2>
+
+        <p>$lib.escapeHtml($message)</p>
+
+#parse("structure/_footer.vm")
