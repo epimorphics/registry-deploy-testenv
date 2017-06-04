@@ -1,0 +1,88 @@
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix dct:  <http://purl.org/dc/terms/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix void: <http://rdfs.org/ns/void#> .
+@prefix ldp:  <http://www.w3.org/ns/ldp#> .
+@prefix reg:  <http://purl.org/linked-data/registry#> .
+
+@prefix std: <http://environment.data.gov.uk/def/data-standards/code-vocab/> .
+
+<code-vocab> a owl:Ontology;
+    rdfs:label "Standard code vocabulary"@en;
+    dct:description "Data model for Environment Agency Data Standard codes"@en;
+    .
+
+<code-vocab/Test> a rdfs:Class ;
+  rdfs:label "Test" ;
+  rdfs:isDefinedBy <code-vocab> ;
+.
+
+<code-vocab/shortName> a owl:DatatypeProperty;
+    rdfs:label "Short Name";
+    rdfs:comment "Alt Name/Value";
+    rdfs:range xsd:string;
+    owl:equivalentProperty skos:altLabel;
+    rdfs:isDefinedBy <code-vocab> ;
+    .
+
+<code-vocab/code> a owl:DatatypeProperty;
+    rdfs:label "Code";
+    rdfs:comment "Code string";
+    rdfs:range xsd:string;
+    owl:equivalentProperty skos:notation;
+    rdfs:isDefinedBy <code-vocab> ;
+    .
+
+<code-vocab/description> a owl:DatatypeProperty;
+    rdfs:label "Description";
+    rdfs:comment "Description of code";
+    rdfs:range xsd:string;
+    owl:equivalentProperty dct:description;
+    rdfs:isDefinedBy <code-vocab> ;
+    .
+
+<code-vocab/dataFrom> a owl:DatatypeProperty;
+    rdfs:label "Date from";
+    rdfs:comment "Date code is first valid from";
+    rdfs:range xsd:date;
+    rdfs:isDefinedBy <code-vocab> ;
+    .
+
+<code-vocab/dataTo> a owl:DatatypeProperty;
+    rdfs:label "Date to";
+    rdfs:comment "Date code is valid until";
+    rdfs:range xsd:date;
+    rdfs:isDefinedBy <code-vocab> ;
+    .
+
+<code-vocab/status> a owl:DatatypeProperty;
+    rdfs:label "Status";
+    rdfs:comment "Status of the code within the Environment Agency Data Standards status model, as distinct from its status as a registry entry";
+    rdfs:range xsd:string;
+    rdfs:isDefinedBy <code-vocab> ;
+    .
+
+<code-vocab/submittedBy> a owl:DatatypeProperty;
+    rdfs:label "Submitted by";
+    rdfs:comment "Name of the person who originally submitted this code, which may be distinct from the who uploaded the entry into the register";
+    rdfs:range xsd:string;
+    rdfs:isDefinedBy <code-vocab> ;
+    .
+
+<code-vocab/changeType> a owl:DatatypeProperty;
+    rdfs:label "Change type";
+    rdfs:comment "Type of change last made to the code (insert, delete-edit, content-reversion, rows-modification)";
+    rdfs:range xsd:string;
+    rdfs:isDefinedBy <code-vocab> ;
+    .
+
+<code-vocab/comments> a owl:DatatypeProperty;
+    rdfs:label "Comments";
+    rdfs:comment "Comments on the code";
+    rdfs:range xsd:string;
+    owl:equivalentProperty rdfs:comment;
+    rdfs:isDefinedBy <code-vocab> ;
+    .

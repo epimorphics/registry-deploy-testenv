@@ -1,0 +1,22 @@
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix dct:  <http://purl.org/dc/terms/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix void: <http://rdfs.org/ns/void#> .
+@prefix ldp:  <http://www.w3.org/ns/ldp#> .
+@prefix reg:  <http://purl.org/linked-data/registry#> .
+
+<_ontology> a reg:RegisterItem;
+    rdfs:label "Ontology"@en;
+    dct:description "Registration of OWL Ontology as a batch upload type"@en;
+    reg:itemClass owl:Class;
+    reg:status reg:statusStable;
+    reg:definition [ reg:entity owl:Ontology ];
+    reg:inverseMembershipPredicate rdfs:isDefinedBy;
+    .
+
+owl:Ontology a owl:Class;
+    rdfs:label "OWL Ontology"@en;
+    .
