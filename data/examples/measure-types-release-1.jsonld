@@ -1,0 +1,60 @@
+{
+  "@context" : "http://environment.data.gov.uk/registry/system/json-context",
+
+  "@graph" : [
+    {
+      "@id"             : "flow",
+      "@type"           : "skos:Concept",
+      "rdfs:label"      : "Flow",
+      "dct:description" : "Water flow rate",
+      "std:shortName"   : "flow",
+      "std:code"        : "1",
+      "std:status"      : "Published",
+      "std:changeType"  : "content-insert"
+    }, 
+    
+    {
+      "@id"             : "stage-level",
+      "@type"           : "skos:Concept",
+      "rdfs:label"      : "Stage Level",
+      "dct:description" : "Water Level at Stage measurement point",
+      "std:shortName"   : "stage-level",
+      "std:code"        : "2",
+      "std:status"      : "Published",
+      "std:changeType"  : "content-insert"
+    }, 
+    
+    {
+      "@id"             : "downstage-level",
+      "@type"           : "skos:Concept",
+      "rdfs:label"      : "Downstage Level",
+      "dct:description" : "Water Level at Downstage measurement point",
+      "std:shortName"   : "downstage-level",
+      "std:code"        : "3",
+      "std:status"      : "Published",
+      "std:changeType"  : "content-insert"
+    }, 
+    
+    {
+      "@id"             : "wind-speed",
+      "@type"           : "skos:Concept",
+      "rdfs:label"      : "Wind Speed",
+      "dct:description" : "Wind speed in mph",
+      "std:shortName"   : "wind-speed",
+      "std:code"        : "4",
+      "std:status"      : "Published",
+      "std:changeType"  : "content-insert"
+    }, 
+    
+    {
+      "@id"             : "wind-direction",
+      "@type"           : "skos:Concept",
+      "rdfs:label"      : "Wind Direction",
+      "dct:description" : "Wind Direction in degrees",
+      "std:shortName"   : "wind-direction",
+      "std:code"        : "5",
+      "std:status"      : "Published",
+      "std:changeType"  : "content-insert"
+    }
+  ]
+}    

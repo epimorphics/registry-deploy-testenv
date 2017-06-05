@@ -1,0 +1,2 @@
+"@id","@status",rdfs:label,dct:description,rdf:type,reg:owner
+<measurement-types>,experimental,Measurement Types,Artificial example register purporting to containing a list of types of measurements available from a telemetry system,reg:Register,<http://environment.data.gov.uk/registry/structure/org/environment-agency>
