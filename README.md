@@ -23,9 +23,9 @@ Directory | Role
 
 ## Customizations from Environment Registry
 
-`data/data-standards.ttl` Definition for Data Standards collection, register in `/def` and set to Experimental.
-
-`data/std-prefix.ttl` Definition for `std:` prefix corresponding to Data Standards code vocab. Register in `/system/prefixes`.
-
-`data/owl-bulk-reg.ttl` Add OWL Ontology as a bulk upload type, register in `/system/bulkCollecitonTypes`.
-
+Data file | Role | Action
+---|---|---
+`data/std-prefix.ttl` | Definition for `std:` prefix corresponding to Data Standards code vocab. | Register in `/system/prefixes`.
+`data/owl-bulk-reg.ttl` | Add OWL Ontology as a bulk upload type | Register in `/system/bulkCollecitonTypes`.
+`data/data-standards.ttl` | Definition for Data Standards collection | Register in `/def` and set status to Experimental.
+`data/std-vocab.tll` | Draft vocabulary for EA Data Standards data model | Register in `/def/data-standards` and set register and content to Experimental.
