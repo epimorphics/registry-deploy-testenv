@@ -15,11 +15,6 @@
     dct:description "Data model for Environment Agency Data Standard codes"@en;
     .
 
-<code-vocab/Test> a rdfs:Class ;
-  rdfs:label "Test" ;
-  rdfs:isDefinedBy <code-vocab> ;
-.
-
 <code-vocab/shortName> a owl:DatatypeProperty;
     rdfs:label "Short Name";
     rdfs:comment "Alt Name/Value";
