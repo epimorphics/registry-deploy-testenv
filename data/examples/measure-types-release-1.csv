@@ -1,6 +1,6 @@
-"@id","@status",rdfs:label,std:shortName,std:code,dct:description,std:changeType,rdf:type
-<flow>,experimental,Water Flow,Flow,1,"Water flow in m^3/s",content-insert,skos:Concept
-<stage-level>,experimental,Stage Water Level,Stage Level,2,"Water Level at Stage measurement point",content-insert,skos:Concept
-<downstage-level>,experimental,Downstage Water Level,Downstage level,3,"Water Level at Downstage measurement point",content-insert,skos:Concept
-<wind-speed>,experimental,Wind Speed,Wind Speed,4,"Wind speed in mph",content-insert,skos:Concept
-<wind-dirn>,experimental,Wind Direction,Wind Dirn,5,"Wind direction",content-insert,skos:Concept
+@id,@status,rdfs:label,std:shortName,std:code,dct:description,std:dateFrom,std:dateTo,std:changeType,rdf:type
+<flow>,experimental,Water Flow,Flow,1,Water flow in m^3/s,2017-06-01,,content-insert,skos:Concept
+<stage-level>,experimental,Stage Water Level,Stage Level,2,Water Level at Stage measurement point,2017-06-01,,content-insert,skos:Concept
+<downstage-level>,experimental,Downstage Water Level,Downstage level,3,Water Level at Downstage measurement point,2017-06-01,,content-insert,skos:Concept
+<wind-speed>,experimental,Wind Speed,Wind Speed,4,Wind speed in mph,2017-06-01,,content-insert,skos:Concept
+<wind-dirn>,experimental,Wind Direction,Wind Dirn,5,Wind direction,2017-06-01,,content-insert,skos:Concept

@@ -31,3 +31,5 @@ Data file | Role | Action
 `owl-bulk-reg.ttl` | Add OWL Ontology as a bulk upload type | Register in `/system/bulkCollecitonTypes`.
 `data-standards.ttl` | Definition for Data Standards collection | Register in `/def` and set status to Experimental.
 `std-vocab.tll` | Draft vocabulary for EA Data Standards data model | Register in `/def/data-standards` and set register and content to Experimental.
+`test.nq` | Starting state for Test area | Import to `/def`
+

@@ -1,0 +1,2 @@
+@id,@status,rdfs:label,std:shortName,std:code,dct:description,std:dateFrom,std:dateTo,std:changeType,rdf:type
+<tidal-level>,experimental,Tidal Level,Tide,10,Tidal level relative to national datum,2017-06-03,,content-insert,skos:Concept
