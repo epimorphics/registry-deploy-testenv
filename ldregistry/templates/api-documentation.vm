@@ -1,0 +1,23 @@
+#set($nav="doc")
+#set($extraCSS="highlight-default.css")
+#parse("structure/_preamble.vm")
+
+<div class="container" role="main">
+
+    <div class="row">
+        <div class="col-md-3 col-sm-4">   <!-- Nav -->
+            <div class="toc" data-spy="affix" data-offset-top="60">
+                #include("reference/toc.vm")
+            </div>
+        </div>
+        <div class="col-md-9 col-sm-8">
+            #parse("reference/content.vm")
+        </div>
+    </div>
+
+</div>  <!-- main text area -->
+
+<script type="text/javascript" src="$assets/js/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+#parse("structure/_footer.vm")

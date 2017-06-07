@@ -50,7 +50,7 @@
     #end
 
     #if($extraCSSRaw)
-      #foreach($file in $extraCSS.split(","))
+      #foreach($file in $extraRawCSS.split(","))
         <link type="text/css" rel="stylesheet" href="$file" />
       #end
     #end

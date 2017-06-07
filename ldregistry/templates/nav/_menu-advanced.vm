@@ -25,6 +25,9 @@
         #end
 
        <li role="separator" class="divider"></li>
+       <li><a href="$uiroot/api-documentation">API Documentation</a></li>
+
+       <li role="separator" class="divider"></li>
        #if( $register )
            #if( $showStatus == "accepted" )
                <li><a href="$root/$uri?showStatus=valid">Hide deprecated entries</a></li>

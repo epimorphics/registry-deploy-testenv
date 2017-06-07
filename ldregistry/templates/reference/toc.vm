@@ -1,0 +1,9 @@
+<ul>
+    <li><a href="#introduction">Introduction</a></li>
+    <li><a href="#summary">API Summary</a></li>
+    <li><a href="#model">Content model</a></li>
+    <li><a href="#register">Retrieving a register (code list)</a></li>
+    <li><a href="#item">Retrieving a record</a></li>
+    <li><a href="#versions">History and versions</a></li>
+    <li><a href="#search">Search</a></li>
+</ul>

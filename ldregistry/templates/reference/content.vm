@@ -1,0 +1,185 @@
+<h1>Environment Registry API</h1>
+
+<span class="anchor" id="introduction"></span>
+<h2>Introduction</h2>
+
+<p>The Environment Registry is used to published standardized code lists.
+The registry service provides a REST-style API for registering, updating and fetching the data.
+This page summarizes the key elements of that API, details of the full API are available on the development <a href="https://github.com/UKGovLD/registry-core/wiki/Api">wiki</a>.</p>
+
+<p>The examples, content model and guidance given here are oriented towards the needs of the Environment Agency Data Standards team. We highlight any cases where the material is specific to that setting.</p>
+
+<span class="anchor" id="summary"></span>
+<h2>Summary</h2>
+
+<h3>List contents of a register</h3>
+<table class="table table-condensed table-bordered">
+  <thead>
+    <tr><th>What</th><th>Parameter</th><th>Example</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>All currently valid entries, in machine readable format</td>
+      <td><code>_format=csv|jsonld|ttl|rdf</code></td>
+      <td><a href="/registry/def/test/measurement-types?_format=csv">{register}?_format=csv</td>
+    </tr>
+    <tr>
+      <td>Include metadata in response</td>
+      <td><code>_view=with_metadata</code></td>
+      <td><a href="/registry/def/test/measurement-types?_format=csv&_view=with_metadata">{register}?_format=csv <br />& _view=with_metadata</td>
+    </tr>
+    <tr>
+      <td>All entries, even if not yet accepted or now deprecated</td>
+      <td><code>status=any</code></td>
+      <td><a href="/registry/def/test/measurement-types?_format=csv&status=any&_view=with_metadata">{register}?_format=csv <br />& status=any & _view=with_metadata</td>
+    </tr>
+    <tr>
+      <td>Contents as they were at an earlier date</td>
+      <td><code>_versionAt={ISO datetime}</code></td>
+      <td><a href="/registry/def/test/measurement-types?_format=csv&_versionAt=2017-06-02T12:00:00Z">{register}?_format=csv <br />& _versionAt=2017-06-02T12:00:00Z</td>
+    </tr>
+    <tr>
+      <td>Only those entries matching some filter criteria</td>
+      <td><code>TDB</code></td>
+      <td><a href="/registry/def/test/measurement-types?_format=csv">{register}?TBD</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Return an individual record</h3>
+<table class="table table-condensed table-bordered">
+  <thead>
+    <tr><th>What</th><th>Parameter</th><th>Example</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Fetch just the record</td>
+      <td><code>_format=csv|jsonld|ttl|rdf</code></td>
+      <td><a href="/registry/def/test/measurement-types/tidal-level?_format=jsonld">{register}/{record}?_format=jsonld</td>
+    </tr>
+    <tr>
+      <td>Fetch record plus associated metadata (RegisterItem)</td>
+      <td><code>_view=with_metadata</code></td>
+      <td><a href="/registry/def/test/measurement-types/tidal-level?_format=jsonld&_view=with_metadata">{register}/{record}?_format=jsonld& _view=with_metadata</a>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Return RegisterItems that describe versions a record</h3>
+<table class="table table-condensed table-bordered">
+  <thead>
+    <tr><th>What</th><th>URI and parameter</th><th>Example</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Fetch item and the record it describes <br /> (equivalent to record plus associated metadata above)</td>
+      <td><code>_{item}</code></td>
+      <td><a href="/registry/def/test/measurement-types/_tidal-level?_format=jsonld">{register}/_{item}?_format=jsonld</a>
+      </td>
+    </tr>
+    <tr>
+      <td>List historical versions of an item</td>
+      <td><code>_{item}?_view=version_list</code></td>
+      <td><a href="/registry/def/test/measurement-types/_tidal-level?_view=version_list&_format=jsonld">{register}/_{item}?_format=jsonld <br />_view=version_list</td>
+    </tr>
+    <tr>
+      <td>Fetch specific version of an item</td>
+      <td><code>_{item}:version</code></td>
+      <td><a href="/registry/def/test/measurement-types/_tidal-level:1?_format=jsonld">{register}/_{item}:1?_format=jsonld</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Adding and updating content</h3>
+<table class="table table-condensed table-bordered">
+  <thead>
+    <tr><th>What</th><th>HTTP action</th><th>Target</th><th>Payload</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Create a new Register</td>
+      <td>POST</td>
+      <td><code>{parent-register}</code></td>
+      <td>Register description.</td>
+    </tr>
+    <tr>
+      <td>Add a new record</td>
+      <td>POST</td>
+      <td><code>{register}</code></td>
+      <td>New record, optionally including associated metadata item.</td>
+    </tr>
+    <tr>
+      <td>Update a record</td>
+      <td>PUT/PATCH</td>
+      <td><code>{register}/{record}</code></td>
+      <td>New or partial record.</td>
+    </tr>
+    <tr>
+      <td>Update metadata item for record.</td>
+      <td>PUT/PATCH</td>
+      <td><code>{register}/_{item}</code></td>
+      <td>New or partial item description, optionally with record as well.</td>
+    </tr>
+    <tr>
+      <td>Add or update multiple records</td>
+      <td>POST</td>
+      <td><code>{register}?edit</code></td>
+      <td>One or more records, optionally including associated metadata items.</td>
+    </tr>
+    <tr>
+      <td>Set the status of a record or register</td>
+      <td>POST</td>
+      <td>
+        <code>{register}?update&status={status}</code> <br />
+        <code>{register}/_item?update&status={status}</code>
+      </td>
+      <td>Empty</td>
+    </tr>
+  </tbody>
+</table>
+
+<span class="anchor" id="model"></span>
+<h2>Content model</h2>
+
+<span class="anchor" id="register"></span>
+<h2>Retrieving a register (code list)</h2>
+
+<span class="anchor" id="item"></span>
+<h2>Retrieving a record</h2>
+
+<span class="anchor" id="versions"></span>
+<h2>History and versions</h2>
+
+<span class="anchor" id="search"></span>
+<h2>Search</h2>
+
+
+<pre><code class="json">{ 
+  "@context" : "http://environment.data.gov.uk/flood-monitoring/doc/context-TBD.jsonld" ,
+  "meta" : {
+    "publisher": "Environment Agency",
+    "licence": "http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/",
+    "documentation": "http://environment.data.gov.uk/flood-monitoring/doc/reference",
+    "version": "0.4",
+    "comment": "WARNING: Alpha test service, may not be stable",
+    "hasFormat": [
+        "http://localhost:8080/api/id/floods/91436.rdf",
+        "http://localhost:8080/api/id/floods/91436.ttl"
+    ]
+  },
+  "items" : [ { 
+    "@id" : "http://environment.data.gov.uk/flood-monitoring/id/floods/91436" ,
+    "description" : "North Sea Coast from Whitby to Filey" ,
+    "eaAreaName" : "Yorkshire" ,
+    "eaRegionName" : "North East" ,
+    "floodArea" : { ... } ,
+    "floodAreaID" : "122WAC953" ,
+    "isTidal" : true ,
+    "severity" : "Warning no longer in force" ,
+    "severityLevel" : 4 ,
+    "timeMessageChanged" : "2015-02-02T19:32:00" ,
+    "timeRaised" : "2015-02-02T19:32:00" ,
+    "timeSeverityChanged" : "2015-02-02T19:32:00"
+  } , ... ]
+}</code></pre>
