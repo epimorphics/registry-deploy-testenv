@@ -31,22 +31,22 @@
     rdfs:isDefinedBy <code-vocab> ;
     .
 
-<code-vocab/description> a owl:DatatypeProperty;
-    rdfs:label "Description";
-    rdfs:comment "Description of code";
-    rdfs:range xsd:string;
-    owl:equivalentProperty dct:description;
-    rdfs:isDefinedBy <code-vocab> ;
-    .
+#<code-vocab/description> a owl:DatatypeProperty;
+#    rdfs:label "Description";
+#    rdfs:comment "Description of code";
+#    rdfs:range xsd:string;
+#    owl:equivalentProperty dct:description;
+#    rdfs:isDefinedBy <code-vocab> ;
+#    .
 
-<code-vocab/dataFrom> a owl:DatatypeProperty;
+<code-vocab/dateFrom> a owl:DatatypeProperty;
     rdfs:label "Date from";
     rdfs:comment "Date code is first valid from";
     rdfs:range xsd:date;
     rdfs:isDefinedBy <code-vocab> ;
     .
 
-<code-vocab/dataTo> a owl:DatatypeProperty;
+<code-vocab/dateTo> a owl:DatatypeProperty;
     rdfs:label "Date to";
     rdfs:comment "Date code is valid until";
     rdfs:range xsd:date;

@@ -3,16 +3,22 @@
 <span class="anchor" id="introduction"></span>
 <h2>Introduction</h2>
 
-<p>The Environment Registry is used to published standardized code lists.
-The registry service provides a REST-style API for registering, updating and fetching the data.
+<p>The <a href="http://environment.data.gov.uk/registry/">Environment Registry</a> is used to published standardized code lists.
+The registry service provides a web API for registering, updating and fetching the data.
 This page summarizes the key elements of that API, details of the full API are available on the development <a href="https://github.com/UKGovLD/registry-core/wiki/Api">wiki</a>.</p>
 
 <p>The examples, content model and guidance given here are oriented towards the needs of the Environment Agency Data Standards team. We highlight any cases where the material is specific to that setting.</p>
 
+<p>A separate copy of the registry service is provided for testing/training purposes. It includes a <em>Test</em> area that can be used for API testing. The contents of this test area are not permanent and may be reset at regular intervals. The test service is hosted at:
+  <a href="http://environment-registry.epimorphics.net/registry/">http://environment-registry.epimorphics.net/registry/</a>
+</p>
+
 <span class="anchor" id="summary"></span>
 <h2>Summary</h2>
 
-<h3>List contents of a register</h3>
+
+<span class="anchor" id="summary-list"></span>
+<h3>List register</h3>
 <table class="table table-condensed table-bordered">
   <thead>
     <tr><th>What</th><th>Parameter</th><th>Example</th></tr>
@@ -46,7 +52,8 @@ This page summarizes the key elements of that API, details of the full API are a
   </tbody>
 </table>
 
-<h3>Return an individual record</h3>
+<span class="anchor" id="summary-record"></span>
+<h3>Fetchrecord</h3>
 <table class="table table-condensed table-bordered">
   <thead>
     <tr><th>What</th><th>Parameter</th><th>Example</th></tr>
@@ -58,7 +65,7 @@ This page summarizes the key elements of that API, details of the full API are a
       <td><a href="/registry/def/test/measurement-types/tidal-level?_format=jsonld">{register}/{record}?_format=jsonld</td>
     </tr>
     <tr>
-      <td>Fetch record plus associated metadata (RegisterItem)</td>
+      <td>Fetch record plus metadata</td>
       <td><code>_view=with_metadata</code></td>
       <td><a href="/registry/def/test/measurement-types/tidal-level?_format=jsonld&_view=with_metadata">{register}/{record}?_format=jsonld& _view=with_metadata</a>
       </td>
@@ -66,14 +73,15 @@ This page summarizes the key elements of that API, details of the full API are a
   </tbody>
 </table>
 
-<h3>Return RegisterItems that describe versions a record</h3>
+<span class="anchor" id="summary-item"></span>
+<h3>Metadata and history</h3>
 <table class="table table-condensed table-bordered">
   <thead>
     <tr><th>What</th><th>URI and parameter</th><th>Example</th></tr>
   </thead>
   <tbody>
     <tr>
-      <td>Fetch item and the record it describes <br /> (equivalent to record plus associated metadata above)</td>
+      <td>Fetch metadata item and the record it describes <br /> (equivalent to above)</td>
       <td><code>_{item}</code></td>
       <td><a href="/registry/def/test/measurement-types/_tidal-level?_format=jsonld">{register}/_{item}?_format=jsonld</a>
       </td>
@@ -91,7 +99,8 @@ This page summarizes the key elements of that API, details of the full API are a
   </tbody>
 </table>
 
-<h3>Adding and updating content</h3>
+<span class="anchor" id="summary-update"></span>
+<h3>Update</h3>
 <table class="table table-condensed table-bordered">
   <thead>
     <tr><th>What</th><th>HTTP action</th><th>Target</th><th>Payload</th></tr>
@@ -142,14 +151,117 @@ This page summarizes the key elements of that API, details of the full API are a
 <span class="anchor" id="model"></span>
 <h2>Content model</h2>
 
+<spam class="anchor" id="model-registry"></span>
+<h3>Registry model</h3>
+
+<p><em>Register</em> - a controlled list of entries. <br/>
+  The entries may be nested registers or may be individual records such as codes in a code list. Each register corresponds to a URI in the registry namespace.</p>
+
+<p><em>Record</em> or <em>entity</em> is a single entry in a register.  <br/>
+  It is generally some abstract code but may also represent some real world entity such as an organization, a geographic location or a chemical substance. Each record has a URI which is a child of the register containing it: <code>{register}/{notation}</code>. The <code>notation</code> acts as a local identifier within the code list, it must not start with a <code>_</code> character and must be a legal URI segment. The primary identifier for the code is the whole URI, not this local notation part.</p>
+
+<p><em>Register Item</em> - the metadata for a single entry in a register.  <br/>
+  Internally registers contain <em>Register Items</em> and each item then points to some associated content <em>record</em>. Externally the API makes it easy to just get the content records by-passing the item metadata unless it's needed. The item metadata records who submitted the entry and when, a history of versions of the entry and the current <em>status</em> of the entry. Items have a URI which is similar to that of the corresponding entry but with an initial <code>_</code> prefix, thus <code>{register}/_{notation}</code> is the item providing metadata for record <code>{register}/{notation}</code>.</p>
+
+<spam class="anchor" id="model-record"></span>
+<h3>Structure of a record</h3>
+
+<p>The registry allows arbitrary information to be associated with each record including codes, labels, descriptive text and cross-links. There is no fixed schema and different entries in the same register may have different properties.</p>
+
+<p>Each record is described by an open set of properties, each property can have one or more values. Additional properties can be added to a record at a later date.</p>
+
+<p>The properties are identified by URIs. For convenience most of the supported formats make use of a shortened prefix form (syntactically similar to <em>qnames</em> in XML) such as <code>std:shortName</code>. The available prefixes are themselves held as a <a href="/registry/system/prefixes">controlled list in the registry service</a>.</p>
+
+<p>The values given to properties are typically strings, numbers, dates, date-times (all based on <a href="https://www.w3.org/TR/xmlschema-2/">XML Schema datatypes</a>) or URIs. Nested structured values are possible but out of scope for this documentation.</p>
+
+<p>While the data model is open there is a minimum of information required and some supporting guidelines. At a minimum all records must have a text label (normally given by the <code>rdfs:label</code> property) and a type (given by <code>rdf:type</code>). The W3C standard for representing concept schemes and thesauri <a href="https://www.w3.org/TR/skos-reference/">SKOS</a> provides a use menu of properties. If in doubt use <code>skos:Concept</code> as the type for an entry. In addition it is often useful to have a longer description of the record to display, for this we recommend the Dublin Core terms, specifically <code>dct:description</code>.</p>
+
+<p>The Environment Agency Data Standards group has developed a data model for code list entries. For convenience we provide a <a href="/registry/def/data-standards/code-vocab">set of properties</a> to represent the terms in this data model, and assign this vocabulary the prefix <code>std</code>. So for this group a typical record entry might contain:</p>
+
+<table class="table table-condensed table-bordered">
+  <thead>
+    <tr><th>Property</th><th>Meaning</th><th>Required</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>rdfs:label</code></td>
+      <td>A text label for the entry.</td>
+      <td>Required</td>
+    </tr>
+    <tr>
+      <td><code>rdf:type</code></td>
+      <td>The type of the entry, use <code>skos:Concept</code> as a default.</td>
+      <td>Required</td>
+    </tr>
+    <tr>
+      <td><code>dct:description</code></td>
+      <td>A longer description for the entry.</td>
+      <td>Recommended</td>
+    </tr>
+    <tr>
+      <td><code>std:shortName</code></td>
+      <td>Alternate name for the entry.</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><code>std:code</code></td>
+      <td>A code for the entry.</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><code>std:dateFrom</code></td>
+      <td>Date valid from.</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><code>std:dateTo</code></td>
+      <td>Date valid until.</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><code>std:changeType</code></td>
+      <td>The nature of the most recent change applied to the entry.</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><code>std:submittedBy</code></td>
+      <td>The name of the person who submitted this entry in the internal data standard, this may be distinct from the name associated with the account used to upload the information the registry.</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><code>std:status</code></td>
+      <td>Status of the code within the Environment Agency Data Standards status model, this may differ from its status as a registry entry.</td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+
+<spam class="anchor" id="model-metadata"></span>
+<h3>Metadata and status</h3>
+
+<spam class="anchor" id="model-format"></span>
+<h3>Data format options</h3>
+
+<spam class="anchor" id="model-jsonld"></span>
+<h3>Format: jsonld</h3>
+
+<spam class="anchor" id="model-csv"></span>
+<h3>Format: csv</h3>
+
+
 <span class="anchor" id="register"></span>
 <h2>Retrieving a register (code list)</h2>
+
+mention paging
 
 <span class="anchor" id="item"></span>
 <h2>Retrieving a record</h2>
 
 <span class="anchor" id="versions"></span>
 <h2>History and versions</h2>
+
+<span class="anchor" id="update"></span>
+<h2>Update</h2>
 
 <span class="anchor" id="search"></span>
 <h2>Search</h2>
