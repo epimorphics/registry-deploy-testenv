@@ -3,21 +3,21 @@
     <li><a href="#summary">API Summary</a></li>
     <ul>
         <li><a href="#summary-list">List register</a></li>
-        <li><a href="#summary-record">Fetch record</a></li>
+        <li><a href="#summary-record">Fetch entry</a></li>
         <li><a href="#summary-item">Metadata and history</a></li>
         <li><a href="#summary-update">Update</a></li>
     </ul>
     <li><a href="#model">Content model</a></li>
     <ul>
       <li><a href="#model-registry">Registry model</a></li>
-      <li><a href="#model-record">Structure of a record</a></li>
+      <li><a href="#model-record">Structure of an entry</a></li>
       <li><a href="#model-metadata">Metadata and status</a></li>
       <li><a href="#model-format">Data format options</a></li>
       <li><a href="#model-jsonld">Format: jsonld</a></li>
       <li><a href="#model-csv">Format: csv</a></li>
     </ul>
     <li><a href="#register">Retrieving a register (code list)</a></li>
-    <li><a href="#item">Retrieving a record</a></li>
+    <li><a href="#item">Retrieving an entry</a></li>
     <li><a href="#versions">History and versions</a></li>
     <li><a href="#update">Update</a></li>
     <li><a href="#search">Search</a></li>
