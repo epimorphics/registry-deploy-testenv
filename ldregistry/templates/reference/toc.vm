@@ -13,12 +13,18 @@
       <li><a href="#model-record">Structure of an entry</a></li>
       <li><a href="#model-metadata">Metadata and status</a></li>
       <li><a href="#model-format">Data format options</a></li>
-      <li><a href="#model-jsonld">Format: jsonld</a></li>
       <li><a href="#model-csv">Format: csv</a></li>
+      <li><a href="#model-jsonld">Format: jsonld</a></li>
     </ul>
     <li><a href="#register">Retrieving a register (code list)</a></li>
     <li><a href="#item">Retrieving an entry</a></li>
     <li><a href="#versions">History and versions</a></li>
     <li><a href="#update">Update</a></li>
+    <ul>
+      <li><a href="#update-entry">Register one entry</a></li>
+      <li><a href="#update-register">Create a register</a></li>
+      <li><a href="#update-item">Update an item</a></li>
+      <li><a href="#update-edit">Update and add multiple items</a></li>
+    </ul>
     <li><a href="#search">Search</a></li>
 </ul>

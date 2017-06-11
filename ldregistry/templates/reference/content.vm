@@ -21,33 +21,33 @@ This page summarizes the core elements of that API, sufficient for most common o
 <h3>List register</h3>
 <table class="table table-condensed table-bordered">
   <thead>
-    <tr><th>What</th><th>Parameter</th><th>Example</th></tr>
+    <tr><th>What</th><th>Request</th><th>Example</th></tr>
   </thead>
   <tbody>
     <tr>
       <td>Fetch all currently valid entries, in machine readable format</td>
       <td><code>_format=csv|jsonld|ttl|rdf</code></td>
-      <td><a href="/registry/def/test/measurement-types?_format=csv">{register}?_format=csv</td>
+      <td><a href="/registry/def/test/measurement-types?_format=csv">{register}?_format=csv</a></td>
     </tr>
     <tr>
       <td>Include metadata along with the entries</td>
       <td><code>_view=with_metadata</code></td>
-      <td><a href="/registry/def/test/measurement-types?_format=csv&_view=with_metadata">{register}?_format=csv <br />& _view=with_metadata</td>
+      <td><a href="/registry/def/test/measurement-types?_format=csv&_view=with_metadata">{register}?_format=csv <br />& _view=with_metadata</a></td>
     </tr>
     <tr>
       <td>All entries, even if not yet accepted or now deprecated</td>
       <td><code>status=any</code></td>
-      <td><a href="/registry/def/test/measurement-types?_format=csv&status=any&_view=with_metadata">{register}?_format=csv <br />& status=any & _view=with_metadata</td>
+      <td><a href="/registry/def/test/measurement-types?_format=csv&status=any&_view=with_metadata">{register}?_format=csv <br />& status=any & _view=with_metadata</a></td>
     </tr>
     <tr>
       <td>Contents as they were at an earlier date</td>
       <td><code>_versionAt={ISO datetime}</code></td>
-      <td><a href="/registry/def/test/measurement-types?_format=csv&_versionAt=2017-06-02T12:00:00Z">{register}?_format=csv <br />& _versionAt=2017-06-02T12:00:00Z</td>
+      <td><a href="/registry/def/test/measurement-types?_format=csv&_versionAt=2017-06-02T12:00:00Z">{register}?_format=csv <br />& _versionAt=2017-06-02T12:00:00Z</a></td>
     </tr>
     <tr>
       <td>Only those entries matching some filter criteria</td>
       <td><code>TDB</code></td>
-      <td><a href="/registry/def/test/measurement-types?_format=csv">{register}?TBD</td>
+      <td><a href="/registry/def/test/measurement-types?_format=csv">{register}?TBD</a></td>
     </tr>
   </tbody>
 </table>
@@ -56,7 +56,7 @@ This page summarizes the core elements of that API, sufficient for most common o
 <h3>Fetch single entry</h3>
 <table class="table table-condensed table-bordered">
   <thead>
-    <tr><th>What</th><th>Parameter</th><th>Example</th></tr>
+    <tr><th>What</th><th>Request</th><th>Example</th></tr>
   </thead>
   <tbody>
     <tr>
@@ -89,12 +89,12 @@ This page summarizes the core elements of that API, sufficient for most common o
     <tr>
       <td>List historical versions of an item</td>
       <td><code>_{item}?_view=version_list</code></td>
-      <td><a href="/registry/def/test/measurement-types/_tidal-level?_view=version_list&_format=jsonld">{register}/_{item}?_format=jsonld <br />_view=version_list</td>
+      <td><a href="/registry/def/test/measurement-types/_tidal-level?_view=version_list&_format=jsonld">{register}/_{item}?_format=jsonld <br />_view=version_list</a></td>
     </tr>
     <tr>
       <td>Fetch specific version of an item</td>
-      <td><code>_{item}:version</code></td>
-      <td><a href="/registry/def/test/measurement-types/_tidal-level:1?_format=jsonld">{register}/_{item}:1?_format=jsonld</td>
+      <td><code>_{item}:{version}</code></td>
+      <td><a href="/registry/def/test/measurement-types/_tidal-level:1?_format=jsonld">{register}/_{item}:1?_format=jsonld</a></td>
     </tr>
   </tbody>
 </table>
@@ -288,7 +288,7 @@ This page summarizes the core elements of that API, sufficient for most common o
     <tr>
       <td>csv</td>
       <td><code>text/csv</code></td>
-      <td>An easy to use CSV encoding which can be use to represent both entries and core metadata (status) but not arbitrary metadata.</td>
+      <td>An easy to use CSV encoding which can represent both entries and core metadata (status) but not arbitrary metadata.</td>
     </tr>
     <tr>
       <td>jsonld</td>
@@ -308,58 +308,481 @@ This page summarizes the core elements of that API, sufficient for most common o
   </tbody>
 </table>
 
-@@ we recommend
+<p></p>
+<p>For developers unfamiliar with the RDF data model and tooling we recommend the CSV format. It is compact, easy to work with and hides the more complex features of the registry model. For developers needing full access to the metadata then the jsonld format is suggested. However, be warned that the jsonld encoding is harder to work with than more "idiomatic" json formats.</p>
 
-<spam class="anchor" id="model-jsonld"></span>
-<h3>Format: jsonld</h3>
+<p>When fetching data then the format can be specified using a query parameter (<code>_format={name}</code>) passing the name of the format requested, or by using normal <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Content_negotiation">HTTP content negotiation</a> using the media types as listed above. If no format is specified then the default return, if permitted by the content negotiation, is HTML format suitable for human viewing via a browser.</p>
+
+<p>When submitting data programmatically then the normal <code>content-type</code> HTTP header should be used to indicate the format. Character encoding should be UTF-8 for all the formats. The UI distinguishes different interactive uploads by their file name extensions, and expects the extension to match the format name as given above.</p>
 
 <spam class="anchor" id="model-csv"></span>
 <h3>Format: csv</h3>
 
+<p>The CSV format returns register entries one entry per row with a column for each property. The columns are either one of the reserved column names listed below or named using the prefix syntax explained <a href"#model-record">earlier</a>.</p>
+
+<p></p>
+
+<table class="table table-condensed table-bordered">
+  <thead>
+    <tr><th>Column name</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>@id</code></td>
+      <td>The URI of the entity.</td>
+    </tr>
+    <tr>
+      <td><code>@status</code></td>
+      <td>The status of the register item using the short names listed <a href="#model-metadata">above</a>.</td>
+    </tr>
+    <tr>
+      <td><code>@notation</code></td>
+      <td>The local notation for the item within the register. Normally, except when the entry is a reference to an external entity, this is the same as the last segment of the URI.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The values in the CSV cells are one of the following:</p>
+
+<table class="table table-condensed table-bordered">
+  <thead>
+    <tr><th>Type</th><th>Syntax example</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>String</td>
+      <td><code>string</code> or <code>'string'</code></td>
+    </tr>
+    <tr>
+      <td>Language tagged string</td>
+      <td><code>'string'@en</code></td>
+    </tr>
+    <tr>
+      <td>Number</td>
+      <td><code>1234</code> for integer or <code>12.34</code>for decimal</td>
+    </tr>
+    <tr>
+      <td>Boolean</td>
+      <td><code>true</code> or <code>false</code></td>
+    </tr>
+    <tr>
+      <td>URI</td>
+      <td><code>&lt;http://foo/bar&gt;</code> or <code>prefix:local</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>If a property has multiple values they are separated by a <code>|</code> (with <code>||</code> used to indicate an actual pipe character).</p>
+
+<p>So an example CSV return for a register, with metadata is:</p>
+
+<table class="table table-condensed table-bordered">
+  <thead>
+    <tr>
+      <th>@id</th>
+      <th>@notation</th>
+      <th>@status</th>
+      <th>dct:description</th>
+      <th>rdf:type</th>
+      <th>rdfs:label</th>
+      <th>std:code</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>&lt;http://environment.data.gov.uk/registry/def/test/measurement-types/tidal-level></td><td>tidal-level</td><td>experimental</td><td>Tidal level relative to national datum</td><td>skos:Concept</td><td>Tidal Level</td><td>10</td></tr>
+    <tr><td>&lt;http://environment.data.gov.uk/registry/def/test/measurement-types/downstage-level&gt;</td><td>downstage-level</td><td>experimental</td><td>Water Level at Downstage measurement point</td><td>skos:Concept</td><td>Downstage Water Level</td><td>3</tr>
+    <tr><td>&lt;http://environment.data.gov.uk/registry/def/test/measurement-types/flow></td><td>flow</td><td>experimental</td><td>Water flow in m^3/s</td><td>skos:Concept</td><td>Water Flow</td><td>1</td></tr>
+    <tr><td>&lt;http://environment.data.gov.uk/registry/def/test/measurement-types/stage-level></td><td>stage-level</td><td>experimental</td><td>Water Level at Stage measurement point</td><td>skos:Concept</td><td>Stage Water Level</td><td>2</td></tr>
+    <tr><td>&lt;http://environment.data.gov.uk/registry/def/test/measurement-types/wind-dirn></td><td>wind-dirn</td><td>retired</td><td>Wind direction</td><td>skos:Concept</td><td>Wind Direction</td><td>5</td></tr>
+  </tbody>
+</table>
+
+<spam class="anchor" id="model-jsonld"></span>
+<h3>Format: jsonld</h3>
+
+<p>The jsonld format represents each entry (and item) as a JSON object with keys normally based on the prefixes property name and simple string values. For example the first entry from the above CSV example returned as a single entry without metadata is:</p>
+
+<pre><code class="json">{ 
+  "@id" : "http://environment.data.gov.uk/registry/def/test/measurement-types/tidal-level",
+  "@type" : "skos:Concept",
+  "std:code" : {
+    "@type" : "xsd:integer",
+    "@value" : "10"
+  },
+  "std:shortName" : "Tide",
+  "dct:description" : "Tidal level relative to national datum",
+  "rdfs:label" : "Tidal Level",
+  "@context" : {
+    "xsd" : "http://www.w3.org/2001/XMLSchema#",
+    ...
+  }
+}
+</code></pre>
+
+Note the following:
+
+<ul>
+  <li>The URI of the entry itself is given using the <code>@id</code> property, as for the CSV format.</li>
+  <li>The <code>@type</code> property is a synonym for <code>rdf:type</code>.</li>
+  <li>Typed values such as numbers are represented by an nested object.</li>
+  <li>The <code>@context</code> contains prefix mappings and other information to enable the jsonld to be interpreted standalone.</li>
+  <li>In some situations the property names will be given without a prefix and the prefixed form can then be found in the <code>@context</code>.</li>
+  <li>Multiple values are indicated using JSON arrays in the obvious manner.</li>
+  <li>To use refer to another resource via its URI use a property value of the form <code>{"@id" : "target-uri"}.</code></li>
+</ul>
+
+<p>When creating a jsonld record for upload then an <code>@context</code> value of <code>"http://environment.data.gov.uk/registry/system/json-context"</code> to include all the registered prefixes.</p>
+
+<p>When multiple values are returned jsonld will represent these as an array of objects within an overall <code>@graph</code> wrapper. For example, list the same register as given in the above CSV example gives the result:</p>
+
+<pre><code class="json">{ 
+  "@graph" : [ {
+    "@id" : "http://environment.data.gov.uk/registry/def/test/measurement-types",
+    "@type" : [ "ldp:Container", "reg:Register" ],
+    "dct:description" : "Artificial example register ...",
+    "dct:modified" : {
+      "@type" : "xsd:dateTime",
+      "@value" : "2017-06-01T10:27:53.082Z"
+    },
+    "reg:owner" : {
+      "@id" : "http://environment.data.gov.uk/registry/structure/org/environment-agency"
+    },
+    "rdfs:label" : "Measurement Types",
+    "rdfs:member" : [ {
+      "@id" : "http://environment.data.gov.uk/registry/def/test/measurement-types/tidal-level"
+      }, ...
+    ],
+    "owl:versionInfo" : {
+      "@type" : "xsd:integer",
+      "@value" : "1"
+    }
+  }, 
+  { 
+    "@id" : "http://environment.data.gov.uk/registry/def/test/measurement-types/tidal-level",
+    "@type" : "skos:Concept",
+    "std:code" : {
+      "@type" : "xsd:integer",
+      "@value" : "10"
+    },
+    "std:shortName" : "Tide",
+    "dct:description" : "Tidal level relative to national datum",
+    "rdfs:label" : "Tidal Level",
+  },
+  ...
+  ],
+  "@context" : {
+    "xsd" : "http://www.w3.org/2001/XMLSchema#",
+    ...
+  }
+}
+</code></pre>
+
+<p>Note that the jsonld format includes an explicit description of the register itself, including a list of all its members. This is also true of the RDF formats.</p>
+
+<p>In some cases the values of properties, especially in metadata records, may include nested structures rather than simple strings or typed values. In those cases the jsonld serialisation with break each contained value out as a separate object with an internal <code>@id</code> identifier of the form <code>_:nnn</code>. In a more idiomatic JSON syntax these values would be represented by a tree of nested objects, though it is relatively easy for an application to construct this tree representation from the flattened jsonld format.</p>
 
 <span class="anchor" id="register"></span>
 <h2>Retrieving a register (code list)</h2>
 
-mention paging
+<p>An HTTP GET on the register URI will return a description of the register and its contents, modified according to following query flags:</p>
+
+<table class="table table-condensed table-bordered">
+  <thead>
+    <tr><th>Flag</th><th>Meaning</th><th>Notes</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>_format=csv|jsonld|ttl|rdf</code></td>
+      <td>Format to return. See <a href="#model-format">above</a>.</td>
+      <td>The csv format will just list entries in the register, the other formats will include a description of the register itself as well.</td>
+    </tr>
+    <tr>
+      <td><code>_view=with_metadata</code></td>
+      <td>Include register item metadata alongside the entity descriptions.</td>
+      <td>In the case of csv format this just adds <code>@status</code> and <code>@notation</code> columns, see <a href="#model-csv">above</a>.</td>
+    </tr>
+    <tr>
+      <td><code>non-member-properties</code></td>
+      <td>Return only a description of the register not its contents.</td>
+      <td>Only usable with formats other than CSV.</td>
+    </tr>
+    <tr>
+      <td><code>status=any|{status}</code></td>
+      <td>Include those members whose status matches the given value.</td>
+      <td>The pseudo-status <code>any</code> returns all entries of any status. The default corresponds to <code>status=valid</code>. Another useful other option is <code>accepted</code> to fetch all entries that have been accepted including those which are now deprecated.</td>
+    </tr>
+    <tr>
+      <td><code>_page=n</code></td>
+      <td>Return just one <em>page</em> of entries. <code>firstpage</code> is an alias for <code>_page=0</code>. </td>
+      <td>This is provided so as to manage client resources when retrieving very large registers. The page size of the Environment Registry is set to  5000 so paging is rarely used.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>@@ TODO filters</p>
+
+<h3>Examples</h3>
+
+<p>Retrieve all currently valid entries as a CSV, one row per entry:</p>
+<div class="indented"><a href="/registry/def/test/measurement-types?_format=csv">{register}?_format=csv</a></div>
+
+<p>Retrieve all currently valid and deprecated entries, including their status, as a CSV:</p>
+<div class="indented"><a href="/registry/def/test/measurement-types?_format=csv&_view=with_metadata&status=accepted">{register}?_format=csv &amp; _view=with_metadata &amp; status=accepted</a></div>
 
 <span class="anchor" id="item"></span>
 <h2>Retrieving an entry</h2>
 
+<table class="table table-condensed table-bordered">
+  <thead>
+    <tr><th>URL</th><th>Parameters</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>{register}/{entity}</code></td>
+      <td>
+        <code>_format=csv|jsonld|ttl|rdf</code> <br />
+        <code>_view=with_metadata</code>
+      </td>
+      <td>Return the description on a single entry. Only applicable when the entity is local to the registry. To fetch the registry's description of an external entity and use the item URL as below.</td>
+    </tr>
+    <tr>
+      <td><code>{register}/_{item}</code></td>
+      <td>
+        <code>_format=jsonld|ttl|rdf</code>
+      </td>
+      <td>Returns the item metadata along with a description of the corresponding entity.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Examples</h3>
+
+<p>The description of a single entry in JSON-LD format:</p>
+<div class="indented"><a href="/registry/def/test/measurement-types/flow?_format=jsonld">{register}/{entity}?_format=jsonld</a></div>
+
+<p>Return the full metadata for an item, along with the entity, in JSON-LD format:</p>
+<div class="indented"><a href="/registry/def/test/measurement-types/_flow?_format=jsonld">{register}/_{item}?_format=jsonld</a></div>
+
 <span class="anchor" id="versions"></span>
 <h2>History and versions</h2>
+
+<p>The registry maintains a history of all versions of a register entry which is updated whenever its description or status is changed. Each version is given a version number which is included in the metadata (the register item). It is possible to retrieve a specific numbered version of an entry, to list the history of versions of an entry or retrieve an entire register as it was at a specific date and time.</p>
+
+<table class="table table-condensed table-bordered">
+  <thead>
+    <tr><th>Request</th><th>What</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>{register}?_versionAt={ISO datetime}</code></td>
+      <td>Fetch register contents as they were at an earlier date</td>
+    </tr>
+    <tr>
+      <td><code>{register}/_{item}?_view=version_list</code></td>
+      <td>List historical versions of an item</td>
+    </tr>
+    <tr>
+      <td><code>{register}/_{item}:{version}</code></td>
+      <td>Fetch specific version of an item</td>
+    </tr>
+
+  </tbody>
+</table>
+
+<h3>Examples</h3>
+
+<p>A register in its original state:</p>
+<div class="indented">
+  <a href="/registry/def/test/measurement-types?_format=csv&_versionAt=2017-06-02T12:00:00Z">{register}?_format=csv &amp; _versionAt=2017-06-02T12:00:00Z</a>
+</div>
+
+<p>The same register after two items have been deprecated:</p>
+<div class="indented">
+  <a href="/registry/def/test/measurement-types?_format=csv&_versionAt=2017-06-04T12:00:00Z">{register}?_format=csv &amp; _versionAt=2017-06-04T12:00:00Z</a>
+</div>
+
+<p>The history of versions of an item whose description has changed (in RDF syntax for readability):</p>
+<div class="indented">
+  <a href="/registry/def/test/measurement-types/_tidal-level?_view=version_list&_format=ttl">{register}/_{item}?_format=ttl &amp;_view=version_list</a>
+</div>
+
+<p>The current version of that item (as a CSV):</p>
+<div class="indented">
+  <a href="/registry/def/test/measurement-types/_tidal-level:2?_format=csv">{register}/_{item}:2?_format=csv</a>
+</div>
+
+<p>The previous version of that item with a different description (as a CSV):</p>
+<div class="indented">
+  <a href="/registry/def/test/measurement-types/_tidal-level:1?_format=csv">{register}/_{item}:1?_format=csv</a>
+</div>
+
 
 <span class="anchor" id="update"></span>
 <h2>Update</h2>
 
+<span class="anchor" id="update-entry"></span>
+<h3>Register one entry</h3>
+<p>To add a new entry, construct a description of the entry in, for example, csv or jsonld format, and POST it to the parent register. If the result is successful the returned HTTP <code>Location</code> header will give the URI of the created item within the register.</p>
+
+<p>For example, if file <code>eg1.jsonld</code> contains:</p>
+<pre><code class="json">{
+  "@context" : "http://environment.data.gov.uk/registry/system/json-context",
+
+  "@id"             : "eg1",
+  "@type"           : "skos:Concept",
+  "rdfs:label"      : "Example 1",
+  "dct:description" : "An example",
+  "std:code"        : 1
+}
+</code></pre>
+
+<p>Then to add this example to an existing register use:</p>
+<pre><code class="nohighlight">curl -i --basic --user username:password -X POST -H "Content-Type: application/ld+json" --data-binary "@eg1.jsonld" {registry}/def/test/egreg
+</code></pre>
+
+<p>This will return a response with headers including:</p>
+<pre><code class="nohighlight">HTTP/1.1 201 Created
+Date: Sun, 11 Jun 2017 14:25:59 GMT
+Location: http://environment.data.gov.uk/registry/def/test/egreg/_eg1
+Content-Length: 0
+</code></pre>
+
+<p>Notice that the supplied <code>@id</code> is a relative URI which is then resolved relatvie to the receiving register. </p>
+
+<p>At this point the new entry will have status of <code>submitted</code> and will not be visible to normal UI users. To set it's status POST an empty request to <code>{register}/_{item}?update&status={status}</code>. For example:</p>
+<pre><code class="nohighlight">curl -i --basic --user username:password -X POST "{registry}/def/test/egreg/_eg1?update&status=experimental"
+</code></pre>
+
+<p>The request will be rejected if the change of status breaks the expected <a href="#model-metadata">lifecycle</a>, though it is possible to override this.</p>
+
+<p>It is possible to both register an entry and set its status at the same time by providing both register item metadata and the entity. The CSV format makes this particularly convenient. For example, the given payload will create a second entry and set its status:</p>
+<pre><code class="nohighlight">@id,@status,rdfs:label,std:code,dct:description,rdf:type
+&lt;eg2>,experimental,Example 2,2,Another example,skos:Concept
+</code></pre>
+
+<p>It can be submitted using:</p>
+<pre><code class="nohighlight">curl -i --basic --user username:password -X POST -H "Content-Type: text/csv" --data-binary "@eg2.csv" {registry}/def/test/egreg
+</code></pre>
+
+<p>Note that this will only work for a user who has appropriate permissions. It is possible to grant a user power to submit proposed new entries but not set their status.</p>
+
+<span class="anchor" id="update-register"></span>
+<h3>Create a register</h3>
+
+<p>To create  register simply create an entry of the right type in its parent register. An example, payload in jsonld would be:</p>
+<pre><code class="nohighlight">{
+  "@context" : "http://environment.data.gov.uk/registry/system/json-context",
+
+  "@id"             : "egreg",
+  "@type"           : "reg:Register",
+  "rdfs:label"      : "Example register",
+  "dct:description" : "Test example register",
+
+  "reg:owner"       : {"@id": "http://environment.data.gov.uk/registry/structure/org/environment-agency"},
+  "reg:category"    : {"@id" : "http://environment.data.gov.uk/registry/structure/category/System"},
+  "env-ui:entityType" : {"@id" : "http://environment.data.gov.uk/registry/structure/entity-type/Abstract"},
+}
+</code></pre>
+
+<p>The last three properties are optional but provide useful metadata to enable faceted browsing of registers within the UI. In particular, it is recommended to always provide an owner, normally drawn from the registry controlled list of <a href="/registry/structure/org">organizations</a>. The category provides indicates the <a href="/registry/structure/category">domain</a> to which the register applies. The entityType indicates the <a href="/registry/structure/entity-type">type of entities</a> the register describes, </p>
+<span class="anchor" id="update-item"></span>
+
+<h3>Update an item</h3>
+<p>An HTTP PUT operation can be used to update an entry, either the entity itself or the metadata as well. For example, the following file can be used to update our earlier example:</p>
+
+<pre><code class="nohighlight">{
+  "@context" : "http://environment.data.gov.uk/registry/system/json-context",
+
+  "@id"             : "http://environment.data.gov.uk/registry/def/test/egreg/eg1",
+  "@type"           : "skos:Concept",
+  "rdfs:label"      : "Example 1",
+  "dct:description" : "A modified example",
+  "std:code"        : "1"
+}
+</code></pre>
+
+<p>The update can be performed by:</p>
+<pre><code class="nohighlight">curl -i --basic --user username:password -X PUT -H "Content-Type: application/ld+json" --data-binary "@eg1b.jsonld" {registry}/def/test/egreg/eg1
+</code></pre>
+
+<p>Note that the URI for the entity in the payload must match the logical URI for the entity in the registry.</p>
+
+<p>It is also possible to change some properties of an item, leaving others unchanged by providing a partial payload and using the HTTP PATCH operation in place of PUT.</p>
+
+<span class="anchor" id="update-edit"></span>
+<h3>Update and add multiple items</h3>
+<p>It is more common to wish to create a modify multiple entries at the same time. The registry provides a variety of mechanisms for this including the ability to upload both a register and its contents at the same time. Here we just cover the most common and flexible operation the <em>edit</em> action. </p>
+
+<p>The edit action allows a submitter to provide a set entries, with or without metadata. If any of entries already exist then they will be updated, otherwise they will be added. When an entry is updated then any existing properties of the entry which aren't mentioned in the payload will be left unchanged, thus acting as a PATCH operation. While the edit action supports any of the data formats it works particularly well with the CSV format - making it possible to fetch a register, edit the contents in a spreadsheet program, and then submit the changes.</p>
+
+<p>The edit action is invoked by POSTing the content updates to the register with the <code>edit</code> query parameter.</p>
+
+<p>For example, with the above set of actions the example register contains the following entries:</p>
+
+<pre><code class="nohighlight">@id,dct:description,rdf:type,rdfs:label,std:code
+&lt;http://environment.data.gov.uk/registry/def/test/egreg/eg1>,A modified example,skos:Concept,Example 1,1
+&lt;http://environment.data.gov.uk/registry/def/test/egreg/eg2>,Another example,skos:Concept,Example 2,2
+</code></pre>
+
+<p>This can be obtained, for example, using:</p>
+<pre><code class="nohighlight">curl -i {registry}/def/test/egreg?_format=csv
+</code></pre>
+
+<p>A modified version of these contents might be:</p>
+<pre><code class="nohighlight">@id,dct:description,rdf:type,rdfs:label,std:code
+&lt;http://environment.data.gov.uk/registry/def/test/egreg/eg1>,An updated example,skos:Concept,Example 1,1
+&lt;http://environment.data.gov.uk/registry/def/test/egreg/eg2>,Another updated example,skos:Concept,Example 2,2
+</code></pre>
+
+<p>Which we can submit using:</p>
+<pre><code class="nohighlight">curl -i --basic --user username:password -X POST -H "Content-Type: text/csv" --data-binary "@egupdate.csv" {registry}/def/test/egreg?edit
+</code></pre>
+
 <span class="anchor" id="search"></span>
 <h2>Search</h2>
 
+<p>The register supports text search over the labels and descriptions of entries and registers: <code>{registry}?query="text"</code>. Where <code>text</code> can include <code>*</code> for wildcards and <code>AND</code> for conjunctions.</p>
 
-<pre><code class="json">{ 
-  "@context" : "http://environment.data.gov.uk/flood-monitoring/doc/context-TBD.jsonld" ,
-  "meta" : {
-    "publisher": "Environment Agency",
-    "licence": "http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/",
-    "documentation": "http://environment.data.gov.uk/flood-monitoring/doc/reference",
-    "version": "0.4",
-    "comment": "WARNING: Alpha test service, may not be stable",
-    "hasFormat": [
-        "http://localhost:8080/api/id/floods/91436.rdf",
-        "http://localhost:8080/api/id/floods/91436.ttl"
-    ]
-  },
-  "items" : [ { 
-    "@id" : "http://environment.data.gov.uk/flood-monitoring/id/floods/91436" ,
-    "description" : "North Sea Coast from Whitby to Filey" ,
-    "eaAreaName" : "Yorkshire" ,
-    "eaRegionName" : "North East" ,
-    "floodArea" : { ... } ,
-    "floodAreaID" : "122WAC953" ,
-    "isTidal" : true ,
-    "severity" : "Warning no longer in force" ,
-    "severityLevel" : 4 ,
-    "timeMessageChanged" : "2015-02-02T19:32:00" ,
-    "timeRaised" : "2015-02-02T19:32:00" ,
-    "timeSeverityChanged" : "2015-02-02T19:32:00"v
-  } , ... ]
-}</code></pre>
+<p>For example, in a registry to which to the above examples have been added then a GET on <code>{registry}?query=example&_format=jsonld</code> will return:</p>
+
+<pre><code class="nohighlight">{
+  "@graph" : [ {
+    "@id" : "http://environment.data.gov.uk/registry/def/test/egreg",
+    "@type" : [ "ldp:Container", "reg:Register" ],
+    "description" : "Test example register",
+    "modified" : "2017-06-11T19:30:06.761Z",
+    "owner" : "http://environment.data.gov.uk/registry/structure/org/environment-agency",
+    "label" : "Example register",
+    "owl:versionInfo" : 3
+  }, {
+    "@id" : "http://environment.data.gov.uk/registry/def/test/egreg/eg1",
+    "@type" : "skos:Concept",
+    "std:code" : 1,
+    "description" : "An updated example",
+    "label" : "Example 1"
+  }, {
+    "@id" : "http://environment.data.gov.uk/registry/def/test/egreg/eg2",
+    "@type" : "skos:Concept",
+    "std:code" : 2,
+    "description" : "Another updated example",
+    "label" : "Example 2"
+  }, {
+    "@id" : "http://environment.data.gov.uk/registry/structure?firstPage&query=example&_format=jsonld",
+    "@type" : "ldp:Page",
+    "items" : {
+      "@list" : [ "http://environment.data.gov.uk/registry/def/test/egreg/eg1", "http://environment.data.gov.uk/registry/def/test/egreg/eg2", "http://environment.data.gov.uk/registry/def/test/egreg" ]
+    },
+    "pageOf" : "http://environment.data.gov.uk/registry/structure?query=example&_format=jsonld"
+  }, {
+    "@id" : "http://environment.data.gov.uk/registry/structure?query=example&_format=jsonld",
+    "member" : [ "http://environment.data.gov.uk/registry/def/test/egreg", "http://environment.data.gov.uk/registry/def/test/egreg/eg2", "http://environment.data.gov.uk/registry/def/test/egreg/eg1" ]
+  } ],
+  "@context" : {
+     ...
+  }
+}
+</code></pre>
+
+<p>Here the entry of type <code>ldp:Page</code> provides one page of results with <code>items/@list</code> given a list of URIs of the matching entries. The other elements in the result set provide descriptions of those matched entries.</p>
+
+<p>Note that csv format for search results is not currently supported.</p>

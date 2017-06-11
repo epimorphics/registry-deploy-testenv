@@ -1,0 +1,9 @@
+{
+  "@context" : "http://environment.data.gov.uk/registry/system/json-context",
+
+  "@id"             : "http://environment.data.gov.uk/registry/def/test/egreg/eg1",
+  "@type"           : "skos:Concept",
+  "rdfs:label"      : "Example 1",
+  "dct:description" : "A modified example",
+  "std:code"        : "1"
+}

@@ -1,0 +1,3 @@
+@id,dct:description,rdf:type,rdfs:label,std:code
+<http://environment.data.gov.uk/registry/def/test/egreg/eg1>,An updated example,skos:Concept,Example 1,1
+<http://environment.data.gov.uk/registry/def/test/egreg/eg2>,Another updated example,skos:Concept,Example 2,2

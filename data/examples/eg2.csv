@@ -1,0 +1,2 @@
+@id,@status,rdfs:label,std:code,dct:description,rdf:type
+<eg2>,experimental,Example 2,2,Another example,skos:Concept

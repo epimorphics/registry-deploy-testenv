@@ -1,0 +1,9 @@
+{
+  "@context" : "http://environment.data.gov.uk/registry/system/json-context",
+
+  "@id"             : "eg1",
+  "@type"           : "skos:Concept",
+  "rdfs:label"      : "Example 1",
+  "dct:description" : "An example",
+  "std:code"        : "1"
+}
