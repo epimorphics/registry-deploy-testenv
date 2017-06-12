@@ -36,7 +36,7 @@ This page summarizes the core elements of that API, sufficient for most common o
     </tr>
     <tr>
       <td>All entries, even if not yet accepted or now deprecated</td>
-      <td><code>status=any</code></td>
+      <td><code>status=any|accepted</code></td>
       <td><a href="/registry/def/test/measurement-types?_format=csv&status=any&_view=with_metadata">{register}?_format=csv <br />& status=any & _view=with_metadata</a></td>
     </tr>
     <tr>
@@ -158,9 +158,9 @@ This page summarizes the core elements of that API, sufficient for most common o
   The entries may be nested registers or may be individual entities such as codes in a code list. Each register corresponds to a URI in the registry namespace.</p>
 
 <p>A <em>register item</em> holds the metadata and version information for a single entry in a register.  <br/>
-  Internally registers contain <em>Register Items</em> and each item then points to some associated content record described the <em>entity</em> being registered. Externally the API makes it easy to just get the content records, by-passing the item metadata unless it's needed. Each item has a URI which is a child of the register containing it: <code>{register}/_{notation}</code>. The <code>notation</code> acts as a local identifier within the code list, it must not start with a <code>_</code> character and must be a legal URI segment.
+  Internally registers contain <em>Register Items</em> and each item then points to some associated content record described the <em>entity</em> being registered. Externally the API makes it easy to list just the content records, by-passing the item metadata unless it's needed. Each item has a URI which is a child of the register containing it: <code>{register}/_{notation}</code>. The <code>notation</code> acts as a local identifier within the code list, it must not start with a <code>_</code> character and must be a legal URI segment.
 
-<p>An <em>entity</em> is thing being registered as an entry in the register.  <br/>
+<p>An <em>entity</em> is the thing being registered as an entry in the register.  <br/>
   It is generally some abstract code but may also represent some real world entity such as an organization, a geographic location or a chemical substance. Typically the description of the entity is managed by the registry and falls within the registry namespace, in which case the entity URI is <code>{register}/{notation}</code> (corresponding to the associated item <code>{register}/_{notation}</code>). </p>
 
   <p>However, the registry also permits <em>external</em> or <em>referenced</em> entities to be registered. In that case the URI for the entity may be arbitrary. This is useful to allow a register to reference some controlled subset of some larger external code list, or to combine codes from multiple lists. The corresponding register item describes the metadata and status of the external items with respect to register. So the same external entry may have different submitters and different status in different registers which reflects the different purposes of those registers.</p>
@@ -227,7 +227,7 @@ This page summarizes the core elements of that API, sufficient for most common o
     </tr>
     <tr>
       <td><code>std:submittedBy</code></td>
-      <td>The name of the person who submitted this entry in the internal data standard, this may be distinct from the metadata information in the registry (since the latter records the account used to upload the information the registry, which may be different).</td>
+      <td>The name of the person who submitted this entry in the internal data standard, this may be distinct from the metadata information in the registry (since the latter records the account used to upload the information the registry, which may be different from the original submitter).</td>
       <td></td>
     </tr>
     <tr>
@@ -241,7 +241,7 @@ This page summarizes the core elements of that API, sufficient for most common o
 <spam class="anchor" id="model-metadata"></span>
 <h3>Metadata and status</h3>
 
-<p>As outlined above, each entry in the register is described by a package of metadata, a <em>register item</em>. The full model of register items is described in the  <a href="https://github.com/UKGovLD/registry-core/wiki/Api">wiki</a> and summarized in this <a href="https://raw.githubusercontent.com/wiki/ukgovld/registry-core/images/registry-diagram.png">diagram</a>. Like the content records themselves, the register item data model is open and arbitrary additional metadata properties can be added to an item.</p>
+<p>As outlined above, each entry in a register is described by a package of metadata, a <em>register item</em>. The full model of register items is described in the  <a href="https://github.com/UKGovLD/registry-core/wiki/Api">wiki</a> and summarized in this <a href="https://raw.githubusercontent.com/wiki/ukgovld/registry-core/images/registry-diagram.png">diagram</a>. Like the content records themselves, the register item data model is open and arbitrary additional metadata properties can be added to an item.</p>
 
 <p>For the most common use cases then the primary metadata information is the <em>status</em> of the entry in the register. The status denotes the standing of the entry as far as that specific register is concerned, the same entity can be included in different registers and may have a different status in each. For example, one agency might regard a particular code as stable and ready for production use whereas another might be deprecating it for their own use.</p>
 
@@ -269,7 +269,7 @@ This page summarizes the core elements of that API, sufficient for most common o
   </ul>
 </ul>
 
-<p>Entries are initially in state <code>submitted</code>, can then be accepted as either <code>experimental</code> and later promoted to <code>stable</code> or go directly to <code>stable</code>. A valid entry can later be retired or superseded. At any point if an entry is regarded as error it can be invalidated.</p>
+<p>Entries are initially in state <code>submitted</code>, can then be accepted as either <code>experimental</code> and later promoted to <code>stable</code> or go directly to <code>stable</code>. A valid entry can later be retired or superseded. At any point if an entry is regarded as an error it can be invalidated.</p>
 
 <p>By default the UI and API will return only entries marked by one of the <code>valid</code> states, however the API can be used to list entries in any specific state (at any level in the hierarchy) or list entries in <code>any</code> state.</p>
 
@@ -313,12 +313,12 @@ This page summarizes the core elements of that API, sufficient for most common o
 
 <p>When fetching data then the format can be specified using a query parameter (<code>_format={name}</code>) passing the name of the format requested, or by using normal <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Content_negotiation">HTTP content negotiation</a> using the media types as listed above. If no format is specified then the default return, if permitted by the content negotiation, is HTML format suitable for human viewing via a browser.</p>
 
-<p>When submitting data programmatically then the normal <code>content-type</code> HTTP header should be used to indicate the format. Character encoding should be UTF-8 for all the formats. The UI distinguishes different interactive uploads by their file name extensions, and expects the extension to match the format name as given above.</p>
+<p>When submitting data programmatically then the normal <code>Content-Type</code> HTTP header should be used to indicate the format. Character encoding should be UTF-8 for all the formats. The UI distinguishes different interactive uploads by their file name extensions, and expects the extension to match the format name as given above.</p>
 
 <spam class="anchor" id="model-csv"></span>
 <h3>Format: csv</h3>
 
-<p>The CSV format returns register entries one entry per row with a column for each property. The columns are either one of the reserved column names listed below or named using the prefix syntax explained <a href"#model-record">earlier</a>.</p>
+<p>The CSV format returns register entries one entry per row with a column for each property. The columns are either one of the reserved column names listed below or named using the prefix syntax explained <a href="#model-record">earlier</a>.</p>
 
 <p></p>
 
@@ -333,15 +333,16 @@ This page summarizes the core elements of that API, sufficient for most common o
     </tr>
     <tr>
       <td><code>@status</code></td>
-      <td>The status of the register item using the short names listed <a href="#model-metadata">above</a>.</td>
+      <td>The status of the register item using the short names listed <a href="#model-metadata">above</a>. Only present if a view "with datadata" is requested.</td>
     </tr>
     <tr>
       <td><code>@notation</code></td>
-      <td>The local notation for the item within the register. Normally, except when the entry is a reference to an external entity, this is the same as the last segment of the URI.</td>
+      <td>The local notation for the item within the register. Normally, except when the entry is a reference to an external entity, this is the same as the last segment of the URI. Only present if a view "with_datadata" is requested.</td>
     </tr>
   </tbody>
 </table>
 
+<p></p>
 <p>The values in the CSV cells are one of the following:</p>
 
 <table class="table table-condensed table-bordered">
@@ -400,7 +401,7 @@ This page summarizes the core elements of that API, sufficient for most common o
 <spam class="anchor" id="model-jsonld"></span>
 <h3>Format: jsonld</h3>
 
-<p>The jsonld format represents each entry (and item) as a JSON object with keys normally based on the prefixes property name and simple string values. For example the first entry from the above CSV example returned as a single entry without metadata is:</p>
+<p>The jsonld format represents each entry (and item) as a JSON object with keys normally based on the prefixes property name and simple string values. For example, the first entry from the above CSV example returned as a single entry without metadata is:</p>
 
 <pre><code class="json">{ 
   "@id" : "http://environment.data.gov.uk/registry/def/test/measurement-types/tidal-level",
@@ -424,16 +425,16 @@ Note the following:
 <ul>
   <li>The URI of the entry itself is given using the <code>@id</code> property, as for the CSV format.</li>
   <li>The <code>@type</code> property is a synonym for <code>rdf:type</code>.</li>
-  <li>Typed values such as numbers are represented by an nested object.</li>
+  <li>Typed values such as numbers are represented by nested objects.</li>
   <li>The <code>@context</code> contains prefix mappings and other information to enable the jsonld to be interpreted standalone.</li>
   <li>In some situations the property names will be given without a prefix and the prefixed form can then be found in the <code>@context</code>.</li>
   <li>Multiple values are indicated using JSON arrays in the obvious manner.</li>
-  <li>To use refer to another resource via its URI use a property value of the form <code>{"@id" : "target-uri"}.</code></li>
+  <li>To refer to another resource via its URI use a property value of the form <code>{"@id" : "target-uri"}</code>.</li>
 </ul>
 
-<p>When creating a jsonld record for upload then an <code>@context</code> value of <code>"http://environment.data.gov.uk/registry/system/json-context"</code> to include all the registered prefixes.</p>
+<p>When creating a jsonld record for upload then use an <code>@context</code> value of <code>"http://environment.data.gov.uk/registry/system/json-context"</code> to include all the registered prefixes.</p>
 
-<p>When multiple values are returned jsonld will represent these as an array of objects within an overall <code>@graph</code> wrapper. For example, list the same register as given in the above CSV example gives the result:</p>
+<p>When multiple values are returned jsonld will represent these as an array of objects within an overall <code>@graph</code> wrapper. For example, listing the same register as given in the above CSV example gives the result:</p>
 
 <pre><code class="json">{ 
   "@graph" : [ {
@@ -479,7 +480,7 @@ Note the following:
 
 <p>Note that the jsonld format includes an explicit description of the register itself, including a list of all its members. This is also true of the RDF formats.</p>
 
-<p>In some cases the values of properties, especially in metadata records, may include nested structures rather than simple strings or typed values. In those cases the jsonld serialisation with break each contained value out as a separate object with an internal <code>@id</code> identifier of the form <code>_:nnn</code>. In a more idiomatic JSON syntax these values would be represented by a tree of nested objects, though it is relatively easy for an application to construct this tree representation from the flattened jsonld format.</p>
+<p>In some cases the values of properties, especially in metadata records, may include nested structures rather than simple strings or typed values. In those cases the jsonld serialisation with break each contained value out as a separate object with an internal <code>@id</code> identifier of the form <code>_:nnn</code>. In a more idiomatic JSON syntax these values would be represented by a tree of nested objects, though it is relatively easy for an application to construct this tree representation from the flattened jsonld format using the <code>@id</code> links.</p>
 
 <span class="anchor" id="register"></span>
 <h2>Retrieving a register (code list)</h2>
@@ -509,7 +510,7 @@ Note the following:
     <tr>
       <td><code>status=any|{status}</code></td>
       <td>Include those members whose status matches the given value.</td>
-      <td>The pseudo-status <code>any</code> returns all entries of any status. The default corresponds to <code>status=valid</code>. Another useful other option is <code>accepted</code> to fetch all entries that have been accepted including those which are now deprecated.</td>
+      <td>The pseudo-status <code>any</code> returns all entries of any status. The default corresponds to status <code>valid</code>. Another useful other option is <code>accepted</code> to fetch all entries that have been accepted including those which are now deprecated.</td>
     </tr>
     <tr>
       <td><code>_page=n</code></td>
@@ -670,7 +671,7 @@ Content-Length: 0
 <h3>Create a register</h3>
 
 <p>To create  register simply create an entry of the right type in its parent register. An example, payload in jsonld would be:</p>
-<pre><code class="nohighlight">{
+<pre><code class="json">{
   "@context" : "http://environment.data.gov.uk/registry/system/json-context",
 
   "@id"             : "egreg",
@@ -684,13 +685,13 @@ Content-Length: 0
 }
 </code></pre>
 
-<p>The last three properties are optional but provide useful metadata to enable faceted browsing of registers within the UI. In particular, it is recommended to always provide an owner, normally drawn from the registry controlled list of <a href="/registry/structure/org">organizations</a>. The category provides indicates the <a href="/registry/structure/category">domain</a> to which the register applies. The entityType indicates the <a href="/registry/structure/entity-type">type of entities</a> the register describes, </p>
+<p>The last three properties are optional but provide useful metadata to enable faceted browsing of registers within the UI. In particular, it is recommended to always provide an owner, normally drawn from the registry controlled list of <a href="/registry/structure/org">organizations</a>. The category property indicates the <a href="/registry/structure/category">domain</a> to which the register applies. The entityType property indicates the <a href="/registry/structure/entity-type">type of entities</a> the register describes, </p>
 <span class="anchor" id="update-item"></span>
 
 <h3>Update an item</h3>
 <p>An HTTP PUT operation can be used to update an entry, either the entity itself or the metadata as well. For example, the following file can be used to update our earlier example:</p>
 
-<pre><code class="nohighlight">{
+<pre><code class="json">{
   "@context" : "http://environment.data.gov.uk/registry/system/json-context",
 
   "@id"             : "http://environment.data.gov.uk/registry/def/test/egreg/eg1",
@@ -711,13 +712,13 @@ Content-Length: 0
 
 <span class="anchor" id="update-edit"></span>
 <h3>Update and add multiple items</h3>
-<p>It is more common to wish to create a modify multiple entries at the same time. The registry provides a variety of mechanisms for this including the ability to upload both a register and its contents at the same time. Here we just cover the most common and flexible operation the <em>edit</em> action. </p>
+<p>It common to wish to create a modify multiple entries at the same time. The registry provides a variety of mechanisms for this including the ability to upload both a register and its contents at the same time. Here we just cover the most common and flexible operation the <em>edit</em> action. </p>
 
 <p>The edit action allows a submitter to provide a set entries, with or without metadata. If any of entries already exist then they will be updated, otherwise they will be added. When an entry is updated then any existing properties of the entry which aren't mentioned in the payload will be left unchanged, thus acting as a PATCH operation. While the edit action supports any of the data formats it works particularly well with the CSV format - making it possible to fetch a register, edit the contents in a spreadsheet program, and then submit the changes.</p>
 
 <p>The edit action is invoked by POSTing the content updates to the register with the <code>edit</code> query parameter.</p>
 
-<p>For example, with the above set of actions the example register contains the following entries:</p>
+<p>For example, after the above set of example update actions the <code>egreg</code> register contains the following entries:</p>
 
 <pre><code class="nohighlight">@id,dct:description,rdf:type,rdfs:label,std:code
 &lt;http://environment.data.gov.uk/registry/def/test/egreg/eg1>,A modified example,skos:Concept,Example 1,1
@@ -738,14 +739,39 @@ Content-Length: 0
 <pre><code class="nohighlight">curl -i --basic --user username:password -X POST -H "Content-Type: text/csv" --data-binary "@egupdate.csv" {registry}/def/test/egreg?edit
 </code></pre>
 
+<p>Similarly a fetch with metadata would include an <code>@status</code> field which can then be modified and submitted back as an <em>edit</em> in the same way.</p>
+
 <span class="anchor" id="search"></span>
 <h2>Search</h2>
 
-<p>The register supports text search over the labels and descriptions of entries and registers: <code>{registry}?query="text"</code>. Where <code>text</code> can include <code>*</code> for wildcards and <code>AND</code> for conjunctions.</p>
+<p>The registry supports text search over the labels and descriptions of entries and registers. Submit a GET request to the root of the registry with the following query parameters:</p>
 
-<p>For example, in a registry to which to the above examples have been added then a GET on <code>{registry}?query=example&_format=jsonld</code> will return:</p>
+<table class="table table-condensed table-bordered">
+  <thead>
+    <tr><th>Parameter</th><th>Meaning</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>query="text"</code></td>
+      <td>Search for all entries whose label or description contains <code>text</code>. Use <code>*</code> for wildcards and <code>AND</code> for conjunctions.</td>
+    </tr>
+    <tr>
+      <td><code>prefix:property=value</code></td>
+      <td>Used in conjunction with a text <code>query</code> this limits to returns to those entries that a property with the given value. </td>
+    </tr>
+    <tr>
+      <td><code>_format=jsonld|ttl|rdf</code></td>
+      <td>Select the format in which results should be returned, note that CSV format is not currently supported for text search.</td>
+    </tr>
+  </tbody>
+</table>
 
-<pre><code class="nohighlight">{
+<p></p>
+<p>For example, in a registry with to which the above example updates have been applied then a GET on:</p>
+<div class="indented"><code>{registry}?query=example&_format=jsonld</code></div>
+<p> will return:</p>
+
+<pre><code class="json">{
   "@graph" : [ {
     "@id" : "http://environment.data.gov.uk/registry/def/test/egreg",
     "@type" : [ "ldp:Container", "reg:Register" ],
@@ -783,6 +809,6 @@ Content-Length: 0
 }
 </code></pre>
 
-<p>Here the entry of type <code>ldp:Page</code> provides one page of results with <code>items/@list</code> given a list of URIs of the matching entries. The other elements in the result set provide descriptions of those matched entries.</p>
+<p>Here the entry of type <code>ldp:Page</code> provides one page of results with <code>items/@list</code> listing the URIs of the matching entries. The other elements in the result set provide descriptions of those matched entries.</p>
 
 <p>Note that csv format for search results is not currently supported.</p>
