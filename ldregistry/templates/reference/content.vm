@@ -46,8 +46,17 @@ This page summarizes the core elements of that API, sufficient for most common o
     </tr>
     <tr>
       <td>Only those entries matching some filter criteria</td>
-      <td><code>TDB</code></td>
-      <td><a href="/registry/def/test/measurement-types?_format=csv">{register}?TBD</a></td>
+      <td>
+        <code>{ex:prop}={value}</code><br />
+        <code>min-{ex:prop}={value}</code><br />
+        <code>minEx-{ex:prop}={value}</code><br />
+        <code>max-{ex:prop}={value}</code><br />
+        <code>maxEx-{ex:prop}={value}</code>
+      </td>
+      <td>
+        <a href="/registry/def/test/measurement-types?std:code=11&_format=csv">{register}?std:code=11</a> <br />
+        <a href="/registry/def/test/measurement-types?min-std:dateFrom=2017-06-03&_format=csv">{register}?min-std:dateFrom=2017-06-03</a> <br />
+      </td>
     </tr>
   </tbody>
 </table>
@@ -513,14 +522,37 @@ Note the following:
       <td>The pseudo-status <code>any</code> returns all entries of any status. The default corresponds to status <code>valid</code>. Another useful other option is <code>accepted</code> to fetch all entries that have been accepted including those which are now deprecated.</td>
     </tr>
     <tr>
+      <td><code>{ex:prop}={value}</code></td>
+      <td>Return only members whose <code>ex:prop</code> property has the given value.</td>
+      <td>The values which syntactically appear to be URIs, integers, decimals, booleans, dates or datetimes will be treated as such.</td>
+    </tr>
+    <tr>
+      <td><code>min-{ex:prop}={value}</code></td>
+      <td>Return only members whose <code>ex:prop</code> property is greater than or equal to the given value.</td>
+      <td>Values are treated as above.</td>
+    </tr>
+    <tr>
+      <td><code>minEx-{ex:prop}={value}</code></td>
+      <td>Return only members whose <code>ex:prop</code> property is greater than the given value.</td>
+      <td>Values are treated as above.</td>
+    </tr>
+    <tr>
+      <td><code>max-{ex:prop}={value}</code></td>
+      <td>Return only members whose <code>ex:prop</code> property is less than or equal to the given value.</td>
+      <td>Values are treated as above.</td>
+    </tr>
+    <tr>
+      <td><code>maxEx-{ex:prop}={value}</code></td>
+      <td>Return only members whose <code>ex:prop</code> property is less than the given value.</td>
+      <td>Values are treated as above.</td>
+    </tr>
+    <tr>
       <td><code>_page=n</code></td>
       <td>Return just one <em>page</em> of entries. <code>firstpage</code> is an alias for <code>_page=0</code>. </td>
       <td>This is provided so as to manage client resources when retrieving very large registers. The page size of the Environment Registry is set to  5000 so paging is rarely used.</td>
     </tr>
   </tbody>
 </table>
-
-<p>@@ TODO filters</p>
 
 <h3>Examples</h3>
 
@@ -529,6 +561,12 @@ Note the following:
 
 <p>Retrieve all currently valid and deprecated entries, including their status, as a CSV:</p>
 <div class="indented"><a href="/registry/def/test/measurement-types?_format=csv&_view=with_metadata&status=accepted">{register}?_format=csv &amp; _view=with_metadata &amp; status=accepted</a></div>
+
+<p>Retrieve as a CSV all currently valid entries whose code value (expressed using the <code>std:code</code> property) is equal to 11:</p>
+<div class="indented"><a href="/registry/def/test/measurement-types?_format=csv&std:code=11">{register}?_format=csv &amp; std:code=11</a></div>
+
+<p>Retrieve as a CSV all currently valid entries which date from 3 June 2017 onwards (expressed using the <code>std:dateFrom</code> property):</p>
+<div class="indented"><a href="/registry/def/test/measurement-types?_format=csv&min-std:dateFrom=2017-06-03">{register}?_format=csv &amp; min-std:dateFrom=2017-06-03</a></div>
 
 <span class="anchor" id="item"></span>
 <h2>Retrieving an entry</h2>
@@ -756,8 +794,8 @@ Content-Length: 0
       <td>Search for all entries whose label or description contains <code>text</code>. Use <code>*</code> for wildcards and <code>AND</code> for conjunctions.</td>
     </tr>
     <tr>
-      <td><code>prefix:property=value</code></td>
-      <td>Used in conjunction with a text <code>query</code> this limits to returns to those entries that a property with the given value. </td>
+      <td><code>{ex:prop}={value}</code></td>
+      <td>Used in conjunction with a text <code>query</code> this limits the returns to those entries whose value of the <code>ex:prop</code> property matches the give value. Supports <code>min-</code>, <code>minEx-</code>, <code>max-</code> and <code>maxEx-</code> prefixes, as for register listing.</td>
     </tr>
     <tr>
       <td><code>_format=jsonld|ttl|rdf</code></td>
