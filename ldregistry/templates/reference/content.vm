@@ -163,16 +163,19 @@ This page summarizes the core elements of that API, sufficient for most common o
 <spam class="anchor" id="model-registry"></span>
 <h3>Registry model</h3>
 
-<p>A <em>register</em> is a controlled list of entries. <br/>
+<p>A <em>register</em> is a controlled list of entries. <p/>
+<p>
   The entries may be nested registers or may be individual entities such as codes in a code list. Each register corresponds to a URI in the registry namespace.</p>
 
-<p>A <em>register item</em> holds the metadata and version information for a single entry in a register.  <br/>
-  Internally registers contain <em>Register Items</em> and each item then points to some associated content record described the <em>entity</em> being registered. Externally the API makes it easy to list just the content records, by-passing the item metadata unless it's needed. Each item has a URI which is a child of the register containing it: <code>{register}/_{notation}</code>. The <code>notation</code> acts as a local identifier within the code list, it must not start with a <code>_</code> character and must be a legal URI segment.
+<p>A <em>register item</em> holds the metadata and version information for a single entry in a register.  </p>
+<p>
+  Internally registers contain <em>Register Items</em> and each item then points to some associated content record describing the <em>entity</em> being registered. Externally the API makes it easy to list just the content records, by-passing the item metadata unless it's needed. Each item has a URI which is a child of the register containing it: <code>{register}/_{notation}</code>. The <code>notation</code> acts as a local identifier within the code list, it must not start with a <code>_</code> character and must be a legal URI segment.
 
-<p>An <em>entity</em> is the thing being registered as an entry in the register.  <br/>
+<p>An <em>entity</em> is the thing being registered as an entry in the register.  </p>
+<p>
   It is generally some abstract code but may also represent some real world entity such as an organization, a geographic location or a chemical substance. Typically the description of the entity is managed by the registry and falls within the registry namespace, in which case the entity URI is <code>{register}/{notation}</code> (corresponding to the associated item <code>{register}/_{notation}</code>). </p>
 
-  <p>However, the registry also permits <em>external</em> or <em>referenced</em> entities to be registered. In that case the URI for the entity may be arbitrary. This is useful to allow a register to reference some controlled subset of some larger external code list, or to combine codes from multiple lists. The corresponding register item describes the metadata and status of the external items with respect to register. So the same external entry may have different submitters and different status in different registers which reflects the different purposes of those registers.</p>
+  <p>However, the registry also permits <em>external</em> or <em>referenced</em> entities to be registered. In that case the URI for the entity may be arbitrary. This is useful to allow a register to reference some controlled subset of some larger external code list, or to combine codes from multiple lists. The corresponding register item describes the metadata and status of the external items with respect to the register. So the same external entry may have different submitters and different status in different registers which reflects the different purposes of those registers.</p>
 
 <spam class="anchor" id="model-record"></span>
 <h3>Structure of an entry</h3>
@@ -181,11 +184,11 @@ This page summarizes the core elements of that API, sufficient for most common o
 
 <p>Each entity is described by an open set of properties, each property can have one or more values. Additional properties and property values can be added to the recorded description at a later date.</p>
 
-<p>The properties are identified by URIs. For convenience most of the supported formats make use of a shortened prefix form (syntactically similar to <em>qnames</em> in XML) such as <code>std:shortName</code>. The available prefixes are themselves held as a <a href="/registry/system/prefixes">controlled list</a> in the registry service.</p>
+<p>The properties are identified by URIs. For convenience the supported formats make use of a shortened prefix form (syntactically similar to <em>qnames</em> in XML) such as <code>std:shortName</code>. The available prefixes are themselves held as a <a href="/registry/system/prefixes">controlled list</a> in the registry service.</p>
 
 <p>The values given to properties are typically strings, numbers, dates, date-times (all based on <a href="https://www.w3.org/TR/xmlschema-2/">XML Schema datatypes</a>) or URIs. Nested structured values are possible but are not covered in this documentation.</p>
 
-<p>While the data model is open there is a minimum of information required and some supporting guidelines. At a minimum all records must include a text label (normally given by the <code>rdfs:label</code> property) and a type (given by <code>rdf:type</code>). The W3C standard for representing concept schemes and thesauri, <a href="https://www.w3.org/TR/skos-reference/">SKOS</a>, provides a useful menu of other properties. If in doubt use <code>skos:Concept</code> as the type for an entry. In addition it is often useful to have a longer description of the entity to display, for this we recommend the <a href="http://dublincore.org/documents/dcmi-terms/">Dublin Core terms</a>, specifically <code>dct:description</code>.</p>
+<p>While the data model is open there is a minimum of information required and some recommended guidelines. At a minimum all records must include a text label (normally given by the <code>rdfs:label</code> property) and a type (given by <code>rdf:type</code>). The W3C standard for representing concept schemes and thesauri, <a href="https://www.w3.org/TR/skos-reference/">SKOS</a>, provides a useful menu of other properties. If in doubt use <code>skos:Concept</code> as the type for an entry. In addition it is often useful to have a longer description of the entity to display, for this we recommend the <a href="http://dublincore.org/documents/dcmi-terms/">Dublin Core terms</a>, specifically <code>dct:description</code>.</p>
 
 <p>The Environment Agency Data Standards group has developed a data model for code list entries. For convenience we provide a <a href="/registry/def/data-standards/code-vocab">set of properties</a> to represent the terms in this data model, and assign this vocabulary the prefix <code>std</code>. So for this group a typical record for an entity might contain:</p>
 
@@ -236,7 +239,7 @@ This page summarizes the core elements of that API, sufficient for most common o
     </tr>
     <tr>
       <td><code>std:submittedBy</code></td>
-      <td>The name of the person who submitted this entry in the internal data standard, this may be distinct from the metadata information in the registry (since the latter records the account used to upload the information the registry, which may be different from the original submitter).</td>
+      <td>The name of the person who submitted this entry in the internal data standard, this may be distinct from the metadata information in the registry (since the latter records the account used to upload the information to the registry, which may be different from the original submitter).</td>
       <td></td>
     </tr>
     <tr>
@@ -278,9 +281,9 @@ This page summarizes the core elements of that API, sufficient for most common o
   </ul>
 </ul>
 
-<p>Entries are initially in state <code>submitted</code>, can then be accepted as either <code>experimental</code> and later promoted to <code>stable</code> or go directly to <code>stable</code>. A valid entry can later be retired or superseded. At any point if an entry is regarded as an error it can be invalidated.</p>
+<p>Entries are initially in state <code>submitted</code>, can then be accepted as either <code>experimental</code> and later promoted to <code>stable</code> or go directly to <code>stable</code>. A valid entry can later be <code>retired</code> or <code>superseded</code>. At any point if an entry is regarded as an error it can be invalidated.</p>
 
-<p>By default the UI and API will return only entries marked by one of the <code>valid</code> states, however the API can be used to list entries in any specific state (at any level in the hierarchy) or list entries in <code>any</code> state.</p>
+<p>By default the UI and API will return only entries marked by one of the <code>valid</code> states, however the API can be used to list entries in any specific state (at any level in the hierarchy) or to list entries in <code>any</code> state.</p>
 
 <p><strong>N.B.</strong> Users of the Environment Agency Data Standards metadata model should be aware that this uses a different status lifecycle and the status of an entry within this model is recorded as a separate <code>std:status</code> property on the entry itself (and thus has no effect on visibility of the entry in the register).</p>
 
@@ -342,11 +345,11 @@ This page summarizes the core elements of that API, sufficient for most common o
     </tr>
     <tr>
       <td><code>@status</code></td>
-      <td>The status of the register item using the short names listed <a href="#model-metadata">above</a>. Only present if a view "with datadata" is requested.</td>
+      <td>The status of the register item using the short names listed <a href="#model-metadata">above</a>. Only present if a view "with_metadata" is requested.</td>
     </tr>
     <tr>
       <td><code>@notation</code></td>
-      <td>The local notation for the item within the register. Normally, except when the entry is a reference to an external entity, this is the same as the last segment of the URI. Only present if a view "with_datadata" is requested.</td>
+      <td>The local notation for the item within the register. Normally, except when the entry is a reference to an external entity, this is the same as the last segment of the URI. Only present if a view "with_metadata" is requested.</td>
     </tr>
   </tbody>
 </table>
@@ -410,7 +413,7 @@ This page summarizes the core elements of that API, sufficient for most common o
 <spam class="anchor" id="model-jsonld"></span>
 <h3>Format: jsonld</h3>
 
-<p>The jsonld format represents each entry (and item) as a JSON object with keys normally based on the prefixes property name and simple string values. For example, the first entry from the above CSV example returned as a single entry without metadata is:</p>
+<p>The jsonld format represents each entry (and item) as a JSON object with keys normally based on the prefixed property name. For example, the first entry from the above CSV example returned as a single entry without metadata is:</p>
 
 <pre><code class="json">{ 
   "@id" : "http://environment.data.gov.uk/registry/def/test/measurement-types/tidal-level",
@@ -441,7 +444,7 @@ Note the following:
   <li>To refer to another resource via its URI use a property value of the form <code>{"@id" : "target-uri"}</code>.</li>
 </ul>
 
-<p>When creating a jsonld record for upload then use an <code>@context</code> value of <code>"http://environment.data.gov.uk/registry/system/json-context"</code> to include all the registered prefixes.</p>
+<p>When creating a jsonld record for upload then use an <code>@context</code> value of <code>"http://environment.data.gov.uk/registry/system/json-context"</code> to include all the registered prefixes. See <a href="#update-entry">below</a> for examples.</p>
 
 <p>When multiple values are returned jsonld will represent these as an array of objects within an overall <code>@graph</code> wrapper. For example, listing the same register as given in the above CSV example gives the result:</p>
 
@@ -489,7 +492,7 @@ Note the following:
 
 <p>Note that the jsonld format includes an explicit description of the register itself, including a list of all its members. This is also true of the RDF formats.</p>
 
-<p>In some cases the values of properties, especially in metadata records, may include nested structures rather than simple strings or typed values. In those cases the jsonld serialisation with break each contained value out as a separate object with an internal <code>@id</code> identifier of the form <code>_:nnn</code>. In a more idiomatic JSON syntax these values would be represented by a tree of nested objects, though it is relatively easy for an application to construct this tree representation from the flattened jsonld format using the <code>@id</code> links.</p>
+<p>In some cases the values of properties, especially in metadata records, may include nested structures rather than simple strings or typed values. In those cases the jsonld serialisation with break each contained value out as a separate object with an internal <code>@id</code> identifier of the form <code>_:nnn</code>. In a more idiomatic JSON syntax these values would be represented by a tree of nested objects, though it is relatively easy for an application to reconstruct this tree representation from the flattened jsonld format using the <code>@id</code> links.</p>
 
 <span class="anchor" id="register"></span>
 <h2>Retrieving a register (code list)</h2>
@@ -582,7 +585,7 @@ Note the following:
         <code>_format=csv|jsonld|ttl|rdf</code> <br />
         <code>_view=with_metadata</code>
       </td>
-      <td>Return the description on a single entry. Only applicable when the entity is local to the registry. To fetch the registry's description of an external entity and use the item URL as below.</td>
+      <td>Return the description of a single entry. Only applicable when the entity is local to the registry. To fetch the registry's description of an external entity use the item URL as below.</td>
     </tr>
     <tr>
       <td><code>{register}/_{item}</code></td>
@@ -655,7 +658,6 @@ Note the following:
   <a href="/registry/def/test/measurement-types/_tidal-level:1?_format=csv">{register}/_{item}:1?_format=csv</a>
 </div>
 
-
 <span class="anchor" id="update"></span>
 <h2>Update</h2>
 
@@ -686,7 +688,7 @@ Location: http://environment.data.gov.uk/registry/def/test/egreg/_eg1
 Content-Length: 0
 </code></pre>
 
-<p>Notice that the supplied <code>@id</code> is a relative URI which is then resolved relatvie to the receiving register. </p>
+<p>Notice that the supplied <code>@id</code> is a relative URI which is then resolved relative to the receiving register. </p>
 
 <p>At this point the new entry will have status of <code>submitted</code> and will not be visible to normal UI users. To set it's status POST an empty request to <code>{register}/_{item}?update&status={status}</code>. For example:</p>
 <pre><code class="nohighlight">curl -i --basic --user username:password -X POST "{registry}/def/test/egreg/_eg1?update&status=experimental"
@@ -719,7 +721,7 @@ Content-Length: 0
 
   "reg:owner"       : {"@id": "http://environment.data.gov.uk/registry/structure/org/environment-agency"},
   "reg:category"    : {"@id" : "http://environment.data.gov.uk/registry/structure/category/System"},
-  "env-ui:entityType" : {"@id" : "http://environment.data.gov.uk/registry/structure/entity-type/Abstract"},
+  "env-ui:entityType" : {"@id" : "http://environment.data.gov.uk/registry/structure/entity-type/Abstract"}
 }
 </code></pre>
 
@@ -746,11 +748,11 @@ Content-Length: 0
 
 <p>Note that the URI for the entity in the payload must match the logical URI for the entity in the registry.</p>
 
-<p>It is also possible to change some properties of an item, leaving others unchanged by providing a partial payload and using the HTTP PATCH operation in place of PUT.</p>
+<p>It is also possible to change some properties of an item, leaving others unchanged, by providing a partial payload and using the HTTP PATCH operation in place of PUT.</p>
 
 <span class="anchor" id="update-edit"></span>
 <h3>Update and add multiple items</h3>
-<p>It common to wish to create a modify multiple entries at the same time. The registry provides a variety of mechanisms for this including the ability to upload both a register and its contents at the same time. Here we just cover the most common and flexible operation the <em>edit</em> action. </p>
+<p>It common to wish to create or modify multiple entries at the same time. The registry provides a variety of mechanisms for this including the ability to upload both a register and its contents at the same time. Here we just cover the most common and flexible operation the <em>edit</em> action. </p>
 
 <p>The edit action allows a submitter to provide a set entries, with or without metadata. If any of entries already exist then they will be updated, otherwise they will be added. When an entry is updated then any existing properties of the entry which aren't mentioned in the payload will be left unchanged, thus acting as a PATCH operation. While the edit action supports any of the data formats it works particularly well with the CSV format - making it possible to fetch a register, edit the contents in a spreadsheet program, and then submit the changes.</p>
 
@@ -805,7 +807,7 @@ Content-Length: 0
 </table>
 
 <p></p>
-<p>For example, in a registry with to which the above example updates have been applied then a GET on:</p>
+<p>For example, in a registry to which the above example updates have been applied then a GET on:</p>
 <div class="indented"><code>{registry}?query=example&_format=jsonld</code></div>
 <p> will return:</p>
 
@@ -847,6 +849,6 @@ Content-Length: 0
 }
 </code></pre>
 
-<p>Here the entry of type <code>ldp:Page</code> provides one page of results with <code>items/@list</code> listing the URIs of the matching entries. The other elements in the result set provide descriptions of those matched entries.</p>
+<p>Here the entry of type <code>ldp:Page</code> provides one page of results with its <code>items/@list</code> value giving the URIs of the matching entries. The other elements in the result set provide descriptions of those matched entries.</p>
 
 <p>Note that csv format for search results is not currently supported.</p>

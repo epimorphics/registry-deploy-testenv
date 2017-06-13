@@ -1,0 +1,3 @@
+# Example action to publish to the test registry
+
+curl -i --basic --user apitest:Apitest451 -X POST -H "Content-Type: application/ld+json" --data-binary "@data/examples/egreg.jsonld" https://environment-registry.epimorphics.net/registry/def/test

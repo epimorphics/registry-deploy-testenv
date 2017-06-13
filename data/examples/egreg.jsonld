@@ -8,5 +8,5 @@
 
   "reg:owner"       : {"@id": "http://environment.data.gov.uk/registry/structure/org/environment-agency"},
   "reg:category"    : {"@id" : "http://environment.data.gov.uk/registry/structure/category/System"},
-  "env-ui:entityType" : {"@id" : "http://environment.data.gov.uk/registry/structure/entity-type/Abstract"},
+  "env-ui:entityType" : {"@id" : "http://environment.data.gov.uk/registry/structure/entity-type/Abstract"}
 }
