@@ -1,3 +1,24 @@
 # Example action to publish to the test registry
 
 curl -i --basic --user apitest:Apitest451 -X POST -H "Content-Type: application/ld+json" --data-binary "@data/examples/egreg.jsonld" https://environment-registry.epimorphics.net/registry/def/test
+
+# The measure-types test register
+
+2017-06-01
+  1. Flow
+  2. Stage Level
+  3. Downstage Level
+  4. Wind Speed
+  5. wind Direction
+
+2017-06-03
+  4. Wind Speed      Retire
+  5. wind Direction  Retire
+
+2017-06-06
+  10. Tidal Level
+  11. Rainfall
+
+2017-06-07
+  10. Tidal Level  - edit description to say national instead of local datum
+
