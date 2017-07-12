@@ -1,3 +1,10 @@
+#macro(tryit $url)
+  <a class="btn btn-default btn-xs try-it" href="/registry/ui/assets/api-active-doc/#/?url=$url" role="button">
+    <i class="fa fa-angle-right" aria-hidden="true"></i>
+      Try it
+  </a>
+#end
+
 <h1>Environment Registry API</h1>
 
 <span class="anchor" id="introduction"></span>
@@ -9,9 +16,11 @@ This page summarizes the core elements of that API, sufficient for most common o
 
 <p>The examples, content model and guidance given here are oriented towards the needs of the Environment Agency Data Standards team. However, the guidance should be generally applicable and we highlight any cases where the material is specific to that setting.</p>
 
-<p>A separate copy of the registry service is provided for testing/training purposes. It includes a <em>Test</em> area that can be used for API testing. The contents of this test area are not permanent and may be reset at regular intervals. The test service is hosted at:
+<p>A separate copy of the registry service is provided for testing/training purposes. It includes a <em>Test</em> area that can be used for API testing. The contents of this test area are not permanent and may be reset at regular intervals (currently nightly). The test service is hosted at:
   <a href="http://environment-registry.epimorphics.net/registry/">http://environment-registry.epimorphics.net/registry/</a>
 </p>
+
+<p>Example URLs given in the text are live links to the test registry and can be tried. In some cases we also provide a link to a <em>try out</em> area.</p>
 
 <span class="anchor" id="summary"></span>
 <h2>Summary</h2>
@@ -560,10 +569,14 @@ Note the following:
 <h3>Examples</h3>
 
 <p>Retrieve all currently valid entries as a CSV, one row per entry:</p>
-<div class="indented"><a href="/registry/def/test/measurement-types?_format=csv">{register}?_format=csv</a></div>
+<div class="indented"><a href="/registry/def/test/measurement-types?_format=csv">{register}?_format=csv</a>
+  #tryit("%2F%3A%7Bregister%7D&method=get&_format=csv&_view=with_metadata&register=measurement-types")
+</div>
 
 <p>Retrieve all currently valid and deprecated entries, including their status, as a CSV:</p>
-<div class="indented"><a href="/registry/def/test/measurement-types?_format=csv&_view=with_metadata&status=accepted">{register}?_format=csv &amp; _view=with_metadata &amp; status=accepted</a></div>
+<div class="indented"><a href="/registry/def/test/measurement-types?_format=csv&_view=with_metadata&status=accepted">{register}?_format=csv &amp; _view=with_metadata &amp; status=accepted</a>
+
+</div>
 
 <p>Retrieve as a CSV all currently valid entries whose code value (expressed using the <code>std:code</code> property) is equal to 11:</p>
 <div class="indented"><a href="/registry/def/test/measurement-types?_format=csv&std:code=11">{register}?_format=csv &amp; std:code=11</a></div>
