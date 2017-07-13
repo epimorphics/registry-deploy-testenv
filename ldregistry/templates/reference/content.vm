@@ -1,5 +1,5 @@
 #macro(tryit $url)
-  <a class="btn btn-default btn-xs try-it" href="/registry/ui/assets/api-active-doc/#/?url=$url" role="button">
+  <a class="btn btn-default btn-xs try-it" href="/registry/ui/assets/api-active-doc/#/?url=$url" role="button" target="_blank">
     <i class="fa fa-angle-right" aria-hidden="true"></i>
       Try it
   </a>
@@ -20,7 +20,7 @@ This page summarizes the core elements of that API, sufficient for most common o
   <a href="http://environment-registry.epimorphics.net/registry/">http://environment-registry.epimorphics.net/registry/</a>
 </p>
 
-<p>Example URLs given in the text are live links to the test registry and can be tried. In some cases we also provide a link to a <em>try out</em> area.</p>
+<p>Example URLs given in the text are live links to the test registry and can be tried. We also provide a separate <a href="/registry/ui/assets/api-active-doc/">try out</a> area where the API can tested. A number of the examples below include deep links into a relevant part of the try out area, these are marked by #tryit("%2F").</p>
 
 <span class="anchor" id="summary"></span>
 <h2>Summary</h2>
@@ -155,11 +155,11 @@ This page summarizes the core elements of that API, sufficient for most common o
       <td>One or more entries, optionally including associated metadata items.</td>
     </tr>
     <tr>
-      <td>Set the status of a register or item</td>
+      <td>Set the status of an item or all items in a register</td>
       <td>POST</td>
       <td>
-        <code>{register}?update&status={status}</code> <br />
         <code>{register}/_item?update&status={status}</code>
+        <code>{register}?update&status={status}</code> <br />
       </td>
       <td>Empty</td>
     </tr>
@@ -569,20 +569,28 @@ Note the following:
 <h3>Examples</h3>
 
 <p>Retrieve all currently valid entries as a CSV, one row per entry:</p>
-<div class="indented"><a href="/registry/def/test/measurement-types?_format=csv">{register}?_format=csv</a>
-  #tryit("%2F%3A%7Bregister%7D&method=get&_format=csv&_view=with_metadata&register=measurement-types")
+<div class="indented">
+  <a href="/registry/def/test/measurement-types?_format=csv">{register}?_format=csv</a>
+  #tryit("%2F%7Bregister%7D&method=get&_format=csv&register=measurement-types")
 </div>
 
 <p>Retrieve all currently valid and deprecated entries, including their status, as a CSV:</p>
-<div class="indented"><a href="/registry/def/test/measurement-types?_format=csv&_view=with_metadata&status=accepted">{register}?_format=csv &amp; _view=with_metadata &amp; status=accepted</a>
-
+<div class="indented">
+  <a href="/registry/def/test/measurement-types?_format=csv&_view=with_metadata&status=accepted">{register}?_format=csv &amp; _view=with_metadata &amp; status=accepted</a>
+  #tryit("%2F%7Bregister%7D&method=get&_format=csv&register=measurement-types&status=accepted&_view=with_metadata")
 </div>
 
 <p>Retrieve as a CSV all currently valid entries whose code value (expressed using the <code>std:code</code> property) is equal to 11:</p>
-<div class="indented"><a href="/registry/def/test/measurement-types?_format=csv&std:code=11">{register}?_format=csv &amp; std:code=11</a></div>
+<div class="indented">
+  <a href="/registry/def/test/measurement-types?_format=csv&std:code=11">{register}?_format=csv &amp; std:code=11</a>
+  #tryit("%2F%7Bregister%7D&method=get&_format=csv&register=measurement-types&std:code=11")
+</div>
 
 <p>Retrieve as a CSV all currently valid entries which date from 3 June 2017 onwards (expressed using the <code>std:dateFrom</code> property):</p>
-<div class="indented"><a href="/registry/def/test/measurement-types?_format=csv&min-std:dateFrom=2017-06-03">{register}?_format=csv &amp; min-std:dateFrom=2017-06-03</a></div>
+<div class="indented">
+  <a href="/registry/def/test/measurement-types?_format=csv&min-std:dateFrom=2017-06-03">{register}?_format=csv &amp; min-std:dateFrom=2017-06-03</a>
+  #tryit("%2F%7Bregister%7D&method=get&_format=csv&register=measurement-types&min-std:dateFrom=2017-06-03")
+</div>
 
 <span class="anchor" id="item"></span>
 <h2>Retrieving an entry</h2>
@@ -649,11 +657,13 @@ Note the following:
 <p>A register in its original state:</p>
 <div class="indented">
   <a href="/registry/def/test/measurement-types?_format=csv&_versionAt=2017-06-02T12:00:00Z">{register}?_format=csv &amp; _versionAt=2017-06-02T12:00:00Z</a>
+  #tryit("%2F%7Bregister%7D&method=get&_format=csv&register=measurement-types&_versionAt=2017-06-02T12:00:00Z")
 </div>
 
 <p>The same register after two items have been deprecated:</p>
 <div class="indented">
   <a href="/registry/def/test/measurement-types?_format=csv&_versionAt=2017-06-04T12:00:00Z">{register}?_format=csv &amp; _versionAt=2017-06-04T12:00:00Z</a>
+  #tryit("%2F%7Bregister%7D&method=get&_format=csv&register=measurement-types&_versionAt=2017-06-04T12:00:00Z")
 </div>
 
 <p>The history of versions of an item whose description has changed (in RDF syntax for readability):</p>
@@ -674,8 +684,104 @@ Note the following:
 <span class="anchor" id="update"></span>
 <h2>Update</h2>
 
+<p><strong>Note:</strong> the examples below include links to the <em>try out</em> area to create an example register and add entries to it. If someone has already done this recently then you should pick a different <code>@id</code> for the register and you'll need to edit the examples accordingly. The try out area is reset every night.</p>
+
+<span class="anchor" id="update-register"></span>
+<h3>Create a register</h3>
+<table class="table table-condensed table-bordered">
+  <thead>
+    <tr><th>What</th><th>HTTP action</th><th>Target</th><th>Payload</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Create a new Register</td>
+      <td>POST</td>
+      <td><code>{parent-register}</code></td>
+      <td>Register description.</td>
+    </tr>
+    <tr>
+      <td>Set the status of a register</td>
+      <td>POST</td>
+      <td>
+        <code>_{register}?update&status={status}</code>
+      </td>
+      <td>Empty</td>
+    </tr>
+  </tbody>
+</table>
+<p></p>
+
+<p>To create register simply create an entry of the right type in its parent register. An example, payload in jsonld would be:</p>
+<pre><code class="json">{
+  "@context" : "http://environment.data.gov.uk/registry/system/json-context",
+
+  "@id"             : "egreg",
+  "@type"           : "reg:Register",
+  "rdfs:label"      : "Example register",
+  "dct:description" : "Test example register",
+
+  "reg:owner"       : {"@id": "http://environment.data.gov.uk/registry/structure/org/environment-agency"},
+  "reg:category"    : {"@id" : "http://environment.data.gov.uk/registry/structure/category/System"},
+  "env-ui:entityType" : {"@id" : "http://environment.data.gov.uk/registry/structure/entity-type/Abstract"}
+}
+</code></pre>
+
+<p>The last three properties are optional but provide useful metadata to enable faceted browsing of registers within the UI. In particular, it is recommended to always provide an owner, normally drawn from the registry controlled list of <a href="/registry/structure/org">organizations</a>. The category property indicates the <a href="/registry/structure/category">domain</a> to which the register applies. The entityType property indicates the <a href="/registry/structure/entity-type">type of entities</a> the register describes.</p>
+
+<p>To create this register in some parent register then we POST the content to that parent. For example:</p>
+<pre><code class="nohighlight">curl -i --basic --user username:password -X POST -H "Content-Type: application/ld+json" --data-binary "@egreg.jsonld" {registry}/def/test
+</code></pre>
+
+<p>Test this using the try out area: #tryit("%2F&method=post&examplePayload=register.json")</p>
+<p>Remember you may have to edit the register ID to avoid a clash if someone has already done this since the last reset.</p>
+
+<p>This will return a response with headers including:</p>
+<pre><code class="nohighlight">HTTP/1.1 201 Created
+Date: Thu, 13 Jul 2017 14:53:32 GMT
+Location: http://environment.data.gov.uk/registry/def/test/_egreg
+</code></pre>
+
+<p>Notice that the supplied <code>@id</code> is a relative URI which is then resolved relative to the receiving register. </p>
+
+<p>At this point the new register will have status of <code>submitted</code> and will not be visible to normal UI users. To set it's status POST an empty request to <code>{parent}/_{register}?update&status={status}</code>. For example:</p>
+<pre><code class="nohighlight">curl -i --basic --user username:password -X POST "{registry}/def/test/_egreg?update&status=experimental"
+</code></pre>
+
+<p>Note that requests to a register normally act on its content (for example it is possible to set the status of all entries in a register in one call). In this case we are setting the status of the register itself, and so need to address the register a simple item in its parent register. Hence the use of the item notation <code>_egreg</code>.
+
+<p>The request will be rejected if the change of status breaks the expected <a href="#model-metadata">lifecycle</a>, though it is possible to override this.</p>
+
+<p>Test this using the try out area:   
+  #tryit("%2F_%7Bregister%7D&method=post&update=true&status=experimental&register=egreg")</p>
+
+<p>If this succeeds then the new register will show up in the <a href="http://environment-registry.epimorphics.net/registry/def/test" target="_blank">test area</a>.</p>
+
 <span class="anchor" id="update-entry"></span>
 <h3>Register one entry</h3>
+<table class="table table-condensed table-bordered">
+  <thead>
+    <tr><th>What</th><th>HTTP action</th><th>Target</th><th>Payload</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Add a new entry to a register</td>
+      <td>POST</td>
+      <td><code>{register}</code></td>
+      <td>New entity, optionally including associated metadata item.</td>
+    </tr>
+    <tr>
+      <td>Set the status of an item or all items in a register</td>
+      <td>POST</td>
+      <td>
+        <code>{register}/_item?update&status={status}</code>
+        <code>{register}?update&status={status}</code> <br />
+      </td>
+      <td>Empty</td>
+    </tr>
+  </tbody>
+</table>
+<p></p>
+
 <p>To add a new entry, construct a description of the entry in, for example, csv or jsonld format, and POST it to the parent register. If the result is successful the returned HTTP <code>Location</code> header will give the URI of the created item within the register.</p>
 
 <p>For example, if file <code>eg1.jsonld</code> contains:</p>
@@ -694,20 +800,19 @@ Note the following:
 <pre><code class="nohighlight">curl -i --basic --user username:password -X POST -H "Content-Type: application/ld+json" --data-binary "@eg1.jsonld" {registry}/def/test/egreg
 </code></pre>
 
-<p>This will return a response with headers including:</p>
-<pre><code class="nohighlight">HTTP/1.1 201 Created
-Date: Sun, 11 Jun 2017 14:25:59 GMT
-Location: http://environment.data.gov.uk/registry/def/test/egreg/_eg1
-Content-Length: 0
-</code></pre>
-
-<p>Notice that the supplied <code>@id</code> is a relative URI which is then resolved relative to the receiving register. </p>
+<p>Test this using the try out area: #tryit("%2F%7Bregister%7D&method=post&examplePayload=entry.json&register=egreg")</p>
+<p>If you picked a different ID for the register in then edit the example to match.</p>
 
 <p>At this point the new entry will have status of <code>submitted</code> and will not be visible to normal UI users. To set it's status POST an empty request to <code>{register}/_{item}?update&status={status}</code>. For example:</p>
 <pre><code class="nohighlight">curl -i --basic --user username:password -X POST "{registry}/def/test/egreg/_eg1?update&status=experimental"
 </code></pre>
 
 <p>The request will be rejected if the change of status breaks the expected <a href="#model-metadata">lifecycle</a>, though it is possible to override this.</p>
+
+<p>Test this using the try out area:   
+  #tryit("%2F%7Bregister%7D%2F_%7Bitem%7D&method=post&update=true&status=experimental&register=egreg&item=eg1")</p>
+
+<p>If this succeeds then the new register will show up in the <a href="http://environment-registry.epimorphics.net/registry/def/test/egreg" target="_blank">test area</a>.</p>
 
 <p>It is possible to both register an entry and set its status at the same time by providing both register item metadata and the entity. The CSV format makes this particularly convenient. For example, the given payload will create a second entry and set its status:</p>
 <pre><code class="nohighlight">@id,@status,rdfs:label,std:code,dct:description,rdf:type
@@ -720,28 +825,40 @@ Content-Length: 0
 
 <p>Note that this will only work for a user who has appropriate permissions. It is possible to grant a user power to submit proposed new entries but not set their status.</p>
 
-<span class="anchor" id="update-register"></span>
-<h3>Create a register</h3>
+<p>Test this using the try out area: #tryit("%2F%7Bregister%7D&method=post&examplePayload=entry.csv&register=egreg")</p>
 
-<p>To create  register simply create an entry of the right type in its parent register. An example, payload in jsonld would be:</p>
-<pre><code class="json">{
-  "@context" : "http://environment.data.gov.uk/registry/system/json-context",
-
-  "@id"             : "egreg",
-  "@type"           : "reg:Register",
-  "rdfs:label"      : "Example register",
-  "dct:description" : "Test example register",
-
-  "reg:owner"       : {"@id": "http://environment.data.gov.uk/registry/structure/org/environment-agency"},
-  "reg:category"    : {"@id" : "http://environment.data.gov.uk/registry/structure/category/System"},
-  "env-ui:entityType" : {"@id" : "http://environment.data.gov.uk/registry/structure/entity-type/Abstract"}
-}
-</code></pre>
-
-<p>The last three properties are optional but provide useful metadata to enable faceted browsing of registers within the UI. In particular, it is recommended to always provide an owner, normally drawn from the registry controlled list of <a href="/registry/structure/org">organizations</a>. The category property indicates the <a href="/registry/structure/category">domain</a> to which the register applies. The entityType property indicates the <a href="/registry/structure/entity-type">type of entities</a> the register describes, </p>
 <span class="anchor" id="update-item"></span>
-
 <h3>Update an item</h3>
+<table class="table table-condensed table-bordered">
+  <thead>
+    <tr><th>What</th><th>HTTP action</th><th>Target</th><th>Payload</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Update an entry</td>
+      <td>PUT/PATCH</td>
+      <td><code>{register}/{entity}</code></td>
+      <td>New or partial entity.</td>
+    </tr>
+    <tr>
+      <td>Update metadata item for entry.</td>
+      <td>PUT/PATCH</td>
+      <td><code>{register}/_{item}</code></td>
+      <td>New or partial item description, optionally with entity as well.</td>
+    </tr>
+    <tr>
+      <td>Set the status of an item or all items in a register</td>
+      <td>POST</td>
+      <td>
+        <code>{register}/_item?update&status={status}</code>
+        <code>{register}?update&status={status}</code> <br />
+      </td>
+      <td>Empty</td>
+    </tr>
+  </tbody>
+</table>
+<p></p>
+
 <p>An HTTP PUT operation can be used to update an entry, either the entity itself or the metadata as well. For example, the following file can be used to update our earlier example:</p>
 
 <pre><code class="json">{
@@ -761,10 +878,27 @@ Content-Length: 0
 
 <p>Note that the URI for the entity in the payload must match the logical URI for the entity in the registry.</p>
 
+<p>Test this using the try out area: #tryit("%2F%7Bregister%7D%2F%7Bentity%7D&method=put&examplePayload=modified-entry.json&register=egreg&entity=eg1")</p>
+
 <p>It is also possible to change some properties of an item, leaving others unchanged, by providing a partial payload and using the HTTP PATCH operation in place of PUT.</p>
 
 <span class="anchor" id="update-edit"></span>
 <h3>Update and add multiple items</h3>
+<table class="table table-condensed table-bordered">
+  <thead>
+    <tr><th>What</th><th>HTTP action</th><th>Target</th><th>Payload</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Add or update multiple entries</td>
+      <td>POST</td>
+      <td><code>{register}?edit</code></td>
+      <td>One or more entries, optionally including associated metadata items.</td>
+    </tr>
+  </tbody>
+</table>
+<p></p>
+
 <p>It common to wish to create or modify multiple entries at the same time. The registry provides a variety of mechanisms for this including the ability to upload both a register and its contents at the same time. Here we just cover the most common and flexible operation the <em>edit</em> action. </p>
 
 <p>The edit action allows a submitter to provide a set entries, with or without metadata. If any of entries already exist then they will be updated, otherwise they will be added. When an entry is updated then any existing properties of the entry which aren't mentioned in the payload will be left unchanged, thus acting as a PATCH operation. While the edit action supports any of the data formats it works particularly well with the CSV format - making it possible to fetch a register, edit the contents in a spreadsheet program, and then submit the changes.</p>
@@ -792,6 +926,9 @@ Content-Length: 0
 <pre><code class="nohighlight">curl -i --basic --user username:password -X POST -H "Content-Type: text/csv" --data-binary "@egupdate.csv" {registry}/def/test/egreg?edit
 </code></pre>
 
+<p>Test this using the try out area: #tryit("%2F%7Bregister%7D&method=post&examplePayload=edit-modified.csv&register=egreg&edit=true")</p>
+
+<p>See the result in the <a href="http://environment-registry.epimorphics.net/registry/def/test/egreg" target="_blank">test area</a>.</p>
 <p>Similarly a fetch with metadata would include an <code>@status</code> field which can then be modified and submitted back as an <em>edit</em> in the same way.</p>
 
 <span class="anchor" id="search"></span>

@@ -21,8 +21,8 @@
     <li><a href="#versions">History and versions</a></li>
     <li><a href="#update">Update</a></li>
     <ul>
-      <li><a href="#update-entry">Register one entry</a></li>
       <li><a href="#update-register">Create a register</a></li>
+      <li><a href="#update-entry">Register one entry</a></li>
       <li><a href="#update-item">Update an item</a></li>
       <li><a href="#update-edit">Update and add multiple items</a></li>
     </ul>
